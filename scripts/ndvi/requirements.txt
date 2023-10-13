@@ -1,0 +1,4 @@
+spai
+rasterio
+geopandas
+Pillow

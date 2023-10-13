@@ -1,0 +1,72 @@
+{
+    "name": "Forest Monitoring",
+    "description": "Template for forest monitoring in a given area of interest",
+    "services": {
+        "scripts": {
+            "downloader": {
+                "storage": "data",
+                "run_on_start": true,
+                "run_every": 5,
+                "env": [
+                    "SH_CLIENT_ID",
+                    "SH_CLIENT_SECRET"
+                ]
+            },
+            "ndvi": {
+                "storage": "data",
+                "run_on_start": false,
+                "run_every": 5
+            }
+        },
+        "notebooks": {
+            "analytics": {
+                "storage": "data",
+                "run_every": 1,
+                "run_on_start": false
+            }
+        },
+        "apis": {
+            "analytics": {
+                "storage": "data",
+                "port": 8010
+            },
+            "xyz": {
+                "storage": "data",
+                "port": 8080
+            }
+        },
+        "uis": {
+            "map": {
+                "port": 5000,
+                "command": "streamlit run uis/map/main.py --server.address localhost",
+                "apis": {
+                    "ANALYTICS_URL": "api_analytics",
+                    "XYZ_URL": "api_xyz"
+                }
+            }
+        }
+    },
+    "variables": {
+        "AOI": {
+            "type": "GeoJSON",
+            "UI": [
+                "DRAW_GEOJSON_MAP",
+                "UPLOAD_GEOJSON"
+            ]
+        },
+        "DATES": {
+            "type": "DateRange",
+            "UI": "DATE_RANGE"
+        },
+        "SH_CLIENT_ID": {
+            "type": "string",
+            "UI": "TEXT",
+            "secret": true
+        },
+        "SH_CLIENT_SECRET": {
+            "type": "string",
+            "UI": "TEXT",
+            "secret": true
+        }
+    }
+}
