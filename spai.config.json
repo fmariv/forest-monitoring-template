@@ -1,6 +1,7 @@
 {
     "name": "Forest Monitoring",
     "description": "Template for forest monitoring in a given area of interest",
+    "thumbnail": "https://images.unsplash.com/photo-1448375240586-882707db888b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
     "services": {
         "scripts": {
             "downloader": {
@@ -14,15 +15,13 @@
             },
             "ndvi": {
                 "storage": "data",
-                "run_on_start": false,
                 "run_every": 5
             }
         },
         "notebooks": {
             "analytics": {
                 "storage": "data",
-                "run_every": 1,
-                "run_on_start": false
+                "run_every": 1
             }
         },
         "apis": {
@@ -40,8 +39,8 @@
                 "port": 5000,
                 "command": "streamlit run uis/map/main.py --server.address localhost",
                 "apis": {
-                    "ANALYTICS_URL": "api_analytics",
-                    "XYZ_URL": "api_xyz"
+                    "ANALYTICS_URL": "analytics",
+                    "XYZ_URL": "xyz"
                 }
             }
         }
