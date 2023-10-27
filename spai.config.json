@@ -13,7 +13,7 @@
                     "SH_CLIENT_SECRET"
                 ]
             },
-            "ndvi": {
+            "forest-monitoring": {
                 "storage": "data",
                 "run_every": 5
             }

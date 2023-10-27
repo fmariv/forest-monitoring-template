@@ -1,4 +1,0 @@
-spai
-rasterio
-Pillow
-matplotlib

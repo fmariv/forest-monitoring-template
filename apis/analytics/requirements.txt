@@ -1,3 +1,0 @@
-spai
-rasterio
-Pillow
