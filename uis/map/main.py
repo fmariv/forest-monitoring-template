@@ -4,19 +4,22 @@ import requests
 import pydeck as pdk
 import os
 
-# tengo que poder sacar la url de alguna manera
+from spai.project import ProjectConfig
 
-# API_URL = "http://localhost"
-# # API_URL = "http://148.113.137.45"
-# ANALYTICS_URL = f"{API_URL}:8011"
-# XYZ_URL = f"{API_URL}:8012"
+
+project = ProjectConfig()
+
+base_url = 'http://localhost'   # TODO control this with env vars
+analytics_url = f'{base_url}:{project.api_port("analytics")}'
+xyz_url = f'{base_url}:{project.api_port("xyz")}'
+
 
 st.set_page_config(page_title="SPAI Demo", page_icon="🌍")
 
 
 @st.cache_data(ttl=10)
 def get_data():  # in cloud fails because localhost is inside docker, need public url
-    api_url = os.getenv("ANALYTICS_URL")
+    api_url = analytics_url
     analytics = requests.get(api_url).json()
     df = pd.DataFrame(analytics)
     return df
@@ -37,7 +40,7 @@ st.sidebar.markdown("### Dates")
 selected_layers = [
     pdk.Layer(
         "TerrainLayer",
-        texture=f"{os.getenv('XYZ_URL')}/NDVI_{date}.tif/{{z}}/{{x}}/{{y}}.png",
+        texture=f"{xyz_url}/NDVI_{date}.tif/{{z}}/{{x}}/{{y}}.png",
         elevation_decoder=ELEVATION_DECODER,
         elevation_data=TERRAIN_IMAGE,
     )

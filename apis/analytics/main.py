@@ -19,8 +19,8 @@ app.add_middleware(
 async def analytics():
     try:
         storage = Storage("data")
-        analytics = storage.read("stats.csv")
-        return json.loads(analytics.to_json())
+        analytics = storage.read("AOI_Vegetation_Quality.json")
+        return analytics
     except Exception as e:
         return {}
 

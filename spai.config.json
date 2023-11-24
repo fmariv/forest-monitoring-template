@@ -5,6 +5,7 @@
     "services": {
         "scripts": {
             "downloader": {
+                "name": "downloader",
                 "storage": "data",
                 "run_on_start": true,
                 "run_every": 5,
@@ -14,28 +15,33 @@
                 ]
             },
             "forest-monitoring": {
+                "name": "forest-monitoring",
                 "storage": "data",
                 "run_every": 5
             }
         },
         "notebooks": {
             "analytics": {
+                "name": "analytics",
                 "storage": "data",
                 "run_every": 1
             }
         },
         "apis": {
             "analytics": {
+                "name": "analytics",
                 "storage": "data",
-                "port": 8010
+                "port": 8000
             },
             "xyz": {
+                "name": "xyz",
                 "storage": "data",
                 "port": 8080
             }
         },
         "uis": {
             "map": {
+                "name": "map",
                 "port": 5000,
                 "command": "streamlit run uis/map/main.py --server.address localhost",
                 "apis": {
@@ -51,11 +57,51 @@
             "UI": [
                 "DRAW_GEOJSON_MAP",
                 "UPLOAD_GEOJSON"
-            ]
+            ],
+            "value": {
+                "type": "FeatureCollection",
+                "features": [
+                    {
+                        "type": "Feature",
+                        "properties": {},
+                        "geometry": {
+                            "type": "Polygon",
+                            "coordinates": [
+                                [
+                                    [
+                                        3.07688064333496,
+                                        42.34062833138711
+                                    ],
+                                    [
+                                        3.174751318648111,
+                                        42.34062833138711
+                                    ],
+                                    [
+                                        3.174751318648111,
+                                        42.39784193720783
+                                    ],
+                                    [
+                                        3.07688064333496,
+                                        42.39784193720783
+                                    ],
+                                    [
+                                        3.07688064333496,
+                                        42.34062833138711
+                                    ]
+                                ]
+                            ]
+                        }
+                    }
+                ]
+            }
         },
         "DATES": {
             "type": "DateRange",
-            "UI": "DATE_RANGE"
+            "UI": "DATE_RANGE",
+            "value": [
+                "2020-08-01",
+                "2020-08-21"
+            ]
         },
         "SH_CLIENT_ID": {
             "type": "string",
