@@ -53,7 +53,7 @@ if selected_layers:
         pdk.Deck(
             map_style="mapbox://styles/mapbox/light-v9",
             initial_view_state={
-                "latitude": 41.4,
+                "latitude": 41.4,   # TODO center on AOI
                 "longitude": 2.17,
                 "zoom": 9,
                 "pitch": 60,
