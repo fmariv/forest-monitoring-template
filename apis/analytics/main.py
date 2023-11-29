@@ -1,9 +1,11 @@
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-import json
-import uvicorn
-from spai.storage import Storage
 import argparse
+import json
+
+import pandas as pd
+import uvicorn
+from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from spai.storage import Storage
 
 app = FastAPI(title="analytics")
 app.add_middleware(
@@ -20,9 +22,11 @@ async def analytics():
     try:
         storage = Storage("data")
         analytics = storage.read("AOI_Vegetation_Quality.json")
+        if isinstance(analytics.index, pd.DatetimeIndex):
+            analytics.index = analytics.index.strftime("%Y-%m-%d")
         return analytics
     except Exception as e:
-        return {}
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 # need this to run in background

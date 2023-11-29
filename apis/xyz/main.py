@@ -1,13 +1,12 @@
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi import FastAPI
-from starlette.responses import StreamingResponse
-from fastapi import HTTPException, status
-import uvicorn
 import argparse
 
+import uvicorn
+from fastapi import FastAPI, HTTPException, status
+from fastapi.middleware.cors import CORSMiddleware
 from spai.image.xyz import get_image_data, get_tile_data, ready_image
 from spai.image.xyz.errors import ImageOutOfBounds
 from spai.storage import Storage
+from starlette.responses import StreamingResponse
 
 # init api
 app = FastAPI(title="xyz")

@@ -13,3 +13,5 @@ shapely
 streamlit
 pandas
 pydeck
+fastapi
+uvicorn

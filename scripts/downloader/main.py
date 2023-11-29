@@ -1,11 +1,11 @@
 from datetime import datetime, timedelta
-from dotenv import load_dotenv
 
 import geopandas as gpd
-
-from spai.storage import Storage
-from spai.data.satellite import explore_satellite_images, download_satellite_image
+from dotenv import load_dotenv
+from spai.data.satellite import (download_satellite_image,
+                                 explore_satellite_images)
 from spai.project import ProjectConfig
+from spai.storage import Storage
 
 load_dotenv()
 
@@ -13,10 +13,10 @@ storage = Storage("data")
 project = ProjectConfig()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # explore available images
     print("Looking for images in the last month")
-    aoi = gpd.GeoDataFrame.from_features(project.aoi['features'])
+    aoi = gpd.GeoDataFrame.from_features(project.aoi["features"])
     dates = project.dates
     images = explore_satellite_images(aoi, dates, cloud_cover=10)
 
@@ -32,7 +32,6 @@ if __name__ == '__main__':
         date = image["date"].split("T")[0]
         # check if image is already downloaded
         if date in dates or image in existing_images:
-            print("Image already downloaded:", date)
             continue
         print("Downloading new image:", date)
         path = download_satellite_image(storage, aoi, date, sensor)

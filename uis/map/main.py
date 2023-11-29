@@ -1,26 +1,25 @@
-import streamlit as st
-import pandas as pd
-import requests
-import pydeck as pdk
 import os
 
+import pandas as pd
+import pydeck as pdk
+import requests
+import streamlit as st
 from spai.project import ProjectConfig
-
 
 project = ProjectConfig()
 
-base_url = 'http://localhost'   # TODO control this with env vars
+base_url = "http://localhost"  # TODO control this with env vars
 analytics_url = f'{base_url}:{project.api_port("analytics")}'
 xyz_url = f'{base_url}:{project.api_port("xyz")}'
 
 
-st.set_page_config(page_title="SPAI Demo", page_icon="🌍")
+st.set_page_config(page_title="Vegetation monitoring Pulse", page_icon="🌍")
 
 
 @st.cache_data(ttl=10)
 def get_data():  # in cloud fails because localhost is inside docker, need public url
     api_url = analytics_url
-    analytics = requests.get(api_url).json()
+    analytics = requests.get(api_url, timeout=10).json()
     df = pd.DataFrame(analytics)
     return df
 
@@ -40,7 +39,7 @@ st.sidebar.markdown("### Dates")
 selected_layers = [
     pdk.Layer(
         "TerrainLayer",
-        texture=f"{xyz_url}/NDVI_{date}.tif/{{z}}/{{x}}/{{y}}.png",
+        texture=f"{xyz_url}/quality_masked_{date}.tif/{{z}}/{{x}}/{{y}}.png",
         elevation_decoder=ELEVATION_DECODER,
         elevation_data=TERRAIN_IMAGE,
     )
@@ -53,7 +52,7 @@ if selected_layers:
         pdk.Deck(
             map_style="mapbox://styles/mapbox/light-v9",
             initial_view_state={
-                "latitude": 41.4,   # TODO center on AOI
+                "latitude": 41.4,  # TODO center on AOI
                 "longitude": 2.17,
                 "zoom": 9,
                 "pitch": 60,
