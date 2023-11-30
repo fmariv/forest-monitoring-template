@@ -1,8 +1,8 @@
 """
 XYZ API
 """
-from typing import Optional
 import argparse
+from typing import Optional
 
 import uvicorn
 from fastapi import FastAPI, HTTPException, status
