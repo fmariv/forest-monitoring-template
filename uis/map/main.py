@@ -30,6 +30,7 @@ def get_data():
     api_url = analytics_url
     analytics = requests.get(api_url, timeout=10).json()
     analytics_df = pd.DataFrame(analytics)
+    analytics_df.sort_index(inplace=True)
     return analytics_df
 
 
@@ -62,36 +63,52 @@ TERRAIN_IMAGE = (
 # Define how to parse elevation tiles
 ELEVATION_DECODER = {"rScaler": 256, "gScaler": 1, "bScaler": 1 / 256, "offset": -32768}
 
-st.sidebar.markdown("### Dates")
 
-selected_layers = [
-    pdk.Layer(
-        "TerrainLayer",
-        texture=f"{xyz_url}/ndvi_{date}.tif/{{z}}/{{x}}/{{y}}.png?palette=RdYlGn",
-        elevation_decoder=ELEVATION_DECODER,
-        elevation_data=TERRAIN_IMAGE,
-    )
-    for date in df.index
-    if st.sidebar.checkbox(date, True)
-]
+def choose_variables():
+    with st.sidebar:
+        st.sidebar.markdown("### Select date and indicator")
+        date = st.selectbox("Date", df.index)
+        variable = st.selectbox("Indicator", ["Vegetation", "Quality"])
+        variable = variable.lower()
+    return date, variable
+
+
+date, variable = choose_variables()
+
+if variable == "quality":
+    stretch = "0,3"
+else:
+    stretch = "0,1"
+
+
+selected_layer = pdk.Layer(
+    "TerrainLayer",
+    texture=f"{xyz_url}/{variable}_masked_{date}.tif/{{z}}/{{x}}/{{y}}.png?palette=RdYlGn&stretch={stretch}",
+    elevation_decoder=ELEVATION_DECODER,
+    elevation_data=TERRAIN_IMAGE,
+)
+
 
 view_state = pdk.ViewState(
     latitude=centroid[1], longitude=centroid[0], zoom=9, pitch=60
 )
 
-if selected_layers:
+if selected_layer:
     st.pydeck_chart(
         pdk.Deck(
             map_style="mapbox://styles/mapbox/light-v9",
             initial_view_state=view_state,
-            layers=selected_layers,
+            layers=selected_layer,
         )
     )
 else:
-    st.error("Please choose at least one layer above.")
+    st.error("Please choose at least one date and indicator.")
 
 st.title("Vegetation Analytics")
 
-st.line_chart(df)
+colors = ["#e41a1c", "#BFEAA2", "#E4EA20", "#245900"]
+
+df_chart = df.drop(columns=["Total"])  # Remove Total column to not plot it
+st.line_chart(df_chart, color=colors)  # TODO use altair
 if st.checkbox("Show data"):
     st.write(df)

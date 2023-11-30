@@ -40,6 +40,7 @@ async def analytics():
         analytics = storage.read("AOI_Vegetation_Quality.json")
         if isinstance(analytics.index, pd.DatetimeIndex):
             analytics.index = analytics.index.strftime("%Y-%m-%d")
+        analytics = analytics.to_dict()
         return analytics
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
