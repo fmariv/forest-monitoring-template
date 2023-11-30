@@ -1,3 +1,7 @@
+"""
+XYZ API
+"""
+from typing import Optional
 import argparse
 
 import uvicorn
@@ -29,6 +33,14 @@ storage = Storage("data")
 
 @app.get("/")
 def retrieve_images():
+    """
+    Return available images
+
+    Returns
+    -------
+    images : list
+        List of available images in tif format
+    """
     return storage.list("*.tif")
 
 
@@ -38,10 +50,40 @@ def retrieve_image_tile(
     z: int,
     x: int,
     y: int,
-    bands: str = "1",
-    stretch: str = "0,1",
-    palette: str = "viridis",
+    bands: Optional[str] = "1",
+    stretch: Optional[str] = "0,1",
+    palette: Optional[str] = "viridis",
 ):
+    """
+    Return image tile
+
+    Parameters
+    ----------
+    image : str
+        Image name
+    z : int
+        Zoom level
+    x : int
+        Tile x coordinate
+    y : int
+        Tile y coordinate
+    bands : str, optional
+        Bands to retrieve, by default "1"
+    stretch : str, optional
+        Stretch to apply, by default "0,1"
+    palette : str, optional
+        Palette to use, by default "viridis"
+
+    Returns
+    -------
+    tile : StreamingResponse
+        Image tile
+
+    Raises
+    ------
+    HTTPException
+        If image is not found
+    """
     image_path = storage.get_path(image)
     tile_size = (256, 256)
     if len(bands) == 1:

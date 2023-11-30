@@ -50,52 +50,11 @@
             "UI": [
                 "DRAW_GEOJSON_MAP",
                 "UPLOAD_GEOJSON"
-            ],
-            "value": {
-                "type": "FeatureCollection",
-                "features": [
-                    {
-                        "id": "0",
-                        "type": "Feature",
-                        "properties": {},
-                        "geometry": {
-                            "type": "Polygon",
-                            "coordinates": [
-                                [
-                                    [
-                                        3.07688064333496,
-                                        42.34062833138711
-                                    ],
-                                    [
-                                        3.174751318648111,
-                                        42.34062833138711
-                                    ],
-                                    [
-                                        3.174751318648111,
-                                        42.39784193720783
-                                    ],
-                                    [
-                                        3.07688064333496,
-                                        42.39784193720783
-                                    ],
-                                    [
-                                        3.07688064333496,
-                                        42.34062833138711
-                                    ]
-                                ]
-                            ]
-                        }
-                    }
-                ]
-            }
+            ]
         },
         "DATES": {
             "type": "DateRange",
-            "UI": "DATE_RANGE",
-            "value": [
-                "2023-08-01",
-                "2023-08-30"
-            ]
+            "UI": "DATE_RANGE"
         },
         "SH_CLIENT_ID": {
             "type": "string",
