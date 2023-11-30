@@ -1,5 +1,9 @@
+"""
+Streamlit app to display vegetation analytics
+"""
 import os
 
+import geopandas as gpd
 import pandas as pd
 import pydeck as pdk
 import requests
@@ -13,18 +17,42 @@ analytics_url = f'{base_url}:{project.api_port("analytics")}'
 xyz_url = f'{base_url}:{project.api_port("xyz")}'
 
 
-st.set_page_config(page_title="Vegetation monitoring Pulse", page_icon="🌍")
-
-
 @st.cache_data(ttl=10)
-def get_data():  # in cloud fails because localhost is inside docker, need public url
+def get_data():
+    """
+    Get vegetation analytics data
+
+    Returns
+    -------
+    df : pandas.DataFrame
+        Dataframe with vegetation analytics data
+    """
     api_url = analytics_url
     analytics = requests.get(api_url, timeout=10).json()
-    df = pd.DataFrame(analytics)
-    return df
+    analytics_df = pd.DataFrame(analytics)
+    return analytics_df
 
+
+def get_aoi_centroid():
+    """
+    Get AOI centroid
+
+    Returns
+    -------
+    centroid : tuple
+        AOI centroid
+    """
+    aoi = project.aoi
+    gdf = gpd.GeoDataFrame.from_features(aoi)
+    centroid = gdf.geometry.centroid[0].x, gdf.geometry.centroid[0].y
+
+    return centroid
+
+
+st.set_page_config(page_title="Forest monitoring Pulse", page_icon="🌳")
 
 df = get_data()
+centroid = get_aoi_centroid()
 
 # AWS Open Data Terrain Tiles
 TERRAIN_IMAGE = (
@@ -39,7 +67,7 @@ st.sidebar.markdown("### Dates")
 selected_layers = [
     pdk.Layer(
         "TerrainLayer",
-        texture=f"{xyz_url}/quality_masked_{date}.tif/{{z}}/{{x}}/{{y}}.png",
+        texture=f"{xyz_url}/ndvi_{date}.tif/{{z}}/{{x}}/{{y}}.png?palette=RdYlGn",
         elevation_decoder=ELEVATION_DECODER,
         elevation_data=TERRAIN_IMAGE,
     )
@@ -47,16 +75,15 @@ selected_layers = [
     if st.sidebar.checkbox(date, True)
 ]
 
+view_state = pdk.ViewState(
+    latitude=centroid[1], longitude=centroid[0], zoom=9, pitch=60
+)
+
 if selected_layers:
     st.pydeck_chart(
         pdk.Deck(
             map_style="mapbox://styles/mapbox/light-v9",
-            initial_view_state={
-                "latitude": 41.4,  # TODO center on AOI
-                "longitude": 2.17,
-                "zoom": 9,
-                "pitch": 60,
-            },
+            initial_view_state=view_state,
             layers=selected_layers,
         )
     )

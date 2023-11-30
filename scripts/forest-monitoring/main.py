@@ -1,3 +1,7 @@
+"""
+Script to run the forest monitoring pipeline
+"""
+
 from os.path import join
 
 from spai.project import ProjectConfig

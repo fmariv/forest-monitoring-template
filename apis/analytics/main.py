@@ -1,3 +1,6 @@
+"""
+Analytics API
+"""
 import argparse
 import json
 
@@ -19,6 +22,19 @@ app.add_middleware(
 
 @app.get("/")
 async def analytics():
+    """
+    Return vegetation analytics
+
+    Returns
+    -------
+    analytics : dict
+        Dictionary with vegetation analytics
+
+    Raises
+    ------
+    HTTPException
+        If analytics file doesn't exist
+    """
     try:
         storage = Storage("data")
         analytics = storage.read("AOI_Vegetation_Quality.json")
