@@ -14,6 +14,7 @@ You can clone and run the template.
 
 ```sh
 $ git clone git@github.com:fmariv/forest-monitoring-template.git
+$ cd forest-monitoring-template
 $ spai run
 ```
 
