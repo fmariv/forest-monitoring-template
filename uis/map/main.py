@@ -1,20 +1,27 @@
 """
-Streamlit app to display vegetation analytics
+Streamlit app with Folium to display vegetation analytics
 """
 import os
 
+import folium
+from streamlit_folium import folium_static
 import geopandas as gpd
 import pandas as pd
-import pydeck as pdk
 import requests
 import streamlit as st
 from spai.project import ProjectConfig
 
+
 project = ProjectConfig()
 
-base_url = "http://localhost"  # TODO control this with env vars
-analytics_url = f'{base_url}:{project.api_port("analytics")}'
-xyz_url = f'{base_url}:{project.api_port("xyz")}'
+BASE_URL = "http://localhost"
+ANALYTICS_URL = f'{BASE_URL}:{project.api_port("analytics")}'
+XYZ_URL = f'{BASE_URL}:{project.api_port("xyz")}'
+
+VARIABLES_STRETCH = {
+    "Vegetation": "0,1",
+    "Quality": "0,3",
+}
 
 
 @st.cache_data(ttl=10)
@@ -27,7 +34,7 @@ def get_data():
     df : pandas.DataFrame
         Dataframe with vegetation analytics data
     """
-    api_url = analytics_url
+    api_url = ANALYTICS_URL
     analytics = requests.get(api_url, timeout=10).json()
     analytics_df = pd.DataFrame(analytics)
     analytics_df.sort_index(inplace=True)
@@ -36,7 +43,7 @@ def get_data():
 
 def get_aoi_centroid():
     """
-    Get AOI centroid
+    Get AoI centroid
 
     Returns
     -------
@@ -45,26 +52,22 @@ def get_aoi_centroid():
     """
     aoi = project.aoi
     gdf = gpd.GeoDataFrame.from_features(aoi)
-    centroid = gdf.geometry.centroid[0].x, gdf.geometry.centroid[0].y
+    centroid = gdf.geometry.centroid[0].y, gdf.geometry.centroid[0].x
 
     return centroid
 
 
-st.set_page_config(page_title="Forest monitoring Pulse", page_icon="🌳")
-
-df = get_data()
-centroid = get_aoi_centroid()
-
-# AWS Open Data Terrain Tiles
-TERRAIN_IMAGE = (
-    "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png"
-)
-
-# Define how to parse elevation tiles
-ELEVATION_DECODER = {"rScaler": 256, "gScaler": 1, "bScaler": 1 / 256, "offset": -32768}
-
-
 def choose_variables():
+    """
+    Choose date and variable from the analytics data
+
+    Returns
+    -------
+    date : str
+        Date from the analytics data
+    variable : str
+        Variable from the analytics data
+    """
     with st.sidebar:
         st.sidebar.markdown("### Select date and indicator")
         date = st.selectbox("Date", df.index)
@@ -73,42 +76,39 @@ def choose_variables():
     return date, variable
 
 
-date, variable = choose_variables()
+st.set_page_config(page_title="Forest monitoring Pulse", page_icon="🌳")
 
-if variable == "quality":
-    stretch = "0,3"
-else:
-    stretch = "0,1"
+df = get_data()  # Get data from the API
+centroid = get_aoi_centroid()  # Get centroid from the AOI
 
+date, variable = choose_variables()  # Choose date and variable from the data
 
-selected_layer = pdk.Layer(
-    "TerrainLayer",
-    texture=f"{xyz_url}/{variable}_masked_{date}.tif/{{z}}/{{x}}/{{y}}.png?palette=RdYlGn&stretch={stretch}",
-    elevation_decoder=ELEVATION_DECODER,
-    elevation_data=TERRAIN_IMAGE,
+url = f"{XYZ_URL}/{variable}_masked_{date}.tif/{{z}}/{{x}}/{{y}}.png?palette=RdYlGn&stretch={VARIABLES_STRETCH[variable]}"
+
+# Create map with Folium
+m = folium.Map(
+    location=centroid,
+    zoom_start=12,
+    tiles="CartoDB Positron",
 )
-
-
-view_state = pdk.ViewState(
-    latitude=centroid[1], longitude=centroid[0], zoom=9, pitch=60
+# Add the analytic layer to the map
+raster = folium.raster_layers.TileLayer(
+    tiles=url,
+    attr="Forest monitoring Pulse",
+    name="Vegetation",
+    overlay=True,
+    control=True,
+    show=True,
 )
+raster.add_to(m)
+folium_static(m)
 
-if selected_layer:
-    st.pydeck_chart(
-        pdk.Deck(
-            map_style="mapbox://styles/mapbox/light-v9",
-            initial_view_state=view_state,
-            layers=selected_layer,
-        )
-    )
-else:
-    st.error("Please choose at least one date and indicator.")
-
+# Plot vegetation analytics data
 st.title("Vegetation Analytics")
 
 colors = ["#e41a1c", "#BFEAA2", "#E4EA20", "#245900"]
 
 df_chart = df.drop(columns=["Total"])  # Remove Total column to not plot it
-st.line_chart(df_chart, color=colors)  # TODO use altair
+st.line_chart(df_chart, color=colors)
 if st.checkbox("Show data"):
     st.write(df)
