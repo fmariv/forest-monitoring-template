@@ -19,8 +19,8 @@ ANALYTICS_URL = f'{BASE_URL}:{project.api_port("analytics")}'
 XYZ_URL = f'{BASE_URL}:{project.api_port("xyz")}'
 
 VARIABLES_STRETCH = {
-    "Vegetation": "0,1",
-    "Quality": "0,3",
+    "vegetation": "0,1",
+    "quality": "0,3",
 }
 
 
