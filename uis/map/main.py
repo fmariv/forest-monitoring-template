@@ -9,7 +9,7 @@ import geopandas as gpd
 import pandas as pd
 import requests
 import streamlit as st
-from spai.project import ProjectConfig
+from spai.models import ProjectConfig
 
 
 project = ProjectConfig()

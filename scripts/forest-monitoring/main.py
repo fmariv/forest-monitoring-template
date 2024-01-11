@@ -4,7 +4,7 @@ Script to run the forest monitoring pipeline
 
 from os.path import join
 
-from spai.project import ProjectConfig
+from spai.models import ProjectConfig
 from spai.pulses import forest_monitoring
 from spai.storage import Storage
 from tqdm import tqdm
