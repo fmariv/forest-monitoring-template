@@ -19,15 +19,30 @@ ANALYTICS_URL = f'{BASE_URL}:{project.api_port("analytics")}'
 XYZ_URL = f'{BASE_URL}:{project.api_port("xyz")}'
 
 VARIABLES_STRETCH = {
-    "vegetation": "0,1",
-    "quality": "0,3",
+    "Vegetation": "0,1",
+    "Quality": "0,3",
+}
+
+ANALYTICS_TABLES = {
+    "Vegetation": "AOI_Vegetation_Growth",
+    "Quality": "AOI_Vegetation_Quality",
+}
+
+VARIABLES_COLORS = {
+    "Vegetation": ["#e41a1c", "#245900"],
+    "Quality": ["#e41a1c", "#BFEAA2", "#E4EA20", "#245900"],
 }
 
 
 @st.cache_data(ttl=10)
-def get_data():
+def get_data(analytics_file: str):
     """
     Get vegetation analytics data
+
+    Parameters
+    ----------
+    analytics_file : str
+        Name of analytics file
 
     Returns
     -------
@@ -35,9 +50,10 @@ def get_data():
         Dataframe with vegetation analytics data
     """
     api_url = ANALYTICS_URL
-    analytics = requests.get(api_url, timeout=10).json()
+    analytics = requests.get(f"{api_url}/{analytics_file}", timeout=10).json()
     analytics_df = pd.DataFrame(analytics)
     analytics_df.sort_index(inplace=True)
+
     return analytics_df
 
 
@@ -68,20 +84,22 @@ def choose_variables():
     variable : str
         Variable from the analytics data
     """
+    base_df = get_data("AOI_Vegetation_Growth")
     with st.sidebar:
         st.sidebar.markdown("### Select date and indicator")
-        date = st.selectbox("Date", df.index)
+        date = st.selectbox("Date", base_df.index)
         variable = st.selectbox("Indicator", ["Vegetation", "Quality"])
-        variable = variable.lower()
-    return date, variable
+        analytics_file = ANALYTICS_TABLES[variable]
+        df = get_data(analytics_file)
+
+    return date, variable, df
 
 
 st.set_page_config(page_title="Forest monitoring Pulse", page_icon="🌳")
 
-df = get_data()  # Get data from the API
 centroid = get_aoi_centroid()  # Get centroid from the AOI
 
-date, variable = choose_variables()  # Choose date and variable from the data
+date, variable, dataframe = choose_variables()  # Choose date and variable from the data
 
 url = f"{XYZ_URL}/{variable}_masked_{date}.tif/{{z}}/{{x}}/{{y}}.png?palette=RdYlGn&stretch={VARIABLES_STRETCH[variable]}"
 
@@ -108,7 +126,10 @@ st.title("Vegetation Analytics")
 
 colors = ["#e41a1c", "#BFEAA2", "#E4EA20", "#245900"]
 
-df_chart = df.drop(columns=["Total"])  # Remove Total column to not plot it
-st.line_chart(df_chart, color=colors)
+# Remove Total column to not plot it
+df_chart = (
+    dataframe.drop(columns=["Total"]) if "Total" in dataframe.columns else dataframe
+)
+st.line_chart(df_chart, color=VARIABLES_COLORS[variable])
 if st.checkbox("Show data"):
-    st.write(df)
+    st.write(dataframe)
