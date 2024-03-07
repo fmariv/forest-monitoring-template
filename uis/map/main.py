@@ -1,6 +1,7 @@
 """
 Streamlit app with Folium to display vegetation analytics
 """
+
 import os
 
 import folium
@@ -9,14 +10,17 @@ import geopandas as gpd
 import pandas as pd
 import requests
 import streamlit as st
-from spai.models import ProjectConfig
 
+from spai.config import SPAIVars
 
-project = ProjectConfig()
+vars = SPAIVars()
 
-BASE_URL = "http://localhost"
-ANALYTICS_URL = f'{BASE_URL}:{project.api_port("analytics")}'
-XYZ_URL = f'{BASE_URL}:{project.api_port("xyz")}'
+# BASE_URL = "http://localhost"
+# ANALYTICS_URL = f'{BASE_URL}:{project.api_port("analytics")}'
+# XYZ_URL = f'{BASE_URL}:{project.api_port("xyz")}'
+ANALYTICS_URL = os.getenv("ANALYTICS_URL")
+XYZ_URL = os.getenv("XYZ_URL")
+
 
 VARIABLES_STRETCH = {
     "Vegetation": "0,1",
@@ -66,7 +70,7 @@ def get_aoi_centroid():
     centroid : tuple
         AOI centroid
     """
-    aoi = project.aoi
+    aoi = vars["AOI"]
     gdf = gpd.GeoDataFrame.from_features(aoi)
     centroid = gdf.geometry.centroid[0].y, gdf.geometry.centroid[0].x
 
