@@ -2,6 +2,8 @@
 Script to download satellite images 
 """
 
+import os
+
 from datetime import datetime, timedelta
 
 import geopandas as gpd
@@ -14,6 +16,11 @@ load_dotenv()
 
 storage = Storage()["data"]
 vars = SPAIVars()
+
+# Declare the SH_CLIENT_ID and SH_CLIENT_SECRET as an environment variable,
+# to make sure the script can access the Sentinel Hub API
+os.environ["SH_CLIENT_ID"] = os.getenv("SH_CLIENT_ID", vars["SH_CLIENT_ID"])
+os.environ["SH_CLIENT_SECRET"] = os.getenv("SH_CLIENT_SECRET", vars["SH_CLIENT_SECRET"])
 
 
 if __name__ == "__main__":
