@@ -105,7 +105,7 @@ centroid = get_aoi_centroid()  # Get centroid from the AOI
 
 date, variable, dataframe = choose_variables()  # Choose date and variable from the data
 
-url = f"{XYZ_URL}/{variable}_masked_{date}.tif/{{z}}/{{x}}/{{y}}.png?palette=RdYlGn&stretch={VARIABLES_STRETCH[variable]}"
+url = f"{XYZ_URL}/{variable.lower()}_masked_{date}.tif/{{z}}/{{x}}/{{y}}.png?palette=RdYlGn&stretch={VARIABLES_STRETCH[variable]}"
 
 # Create map with Folium
 m = folium.Map(
