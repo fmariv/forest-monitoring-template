@@ -4,10 +4,10 @@ storage:
     type: s3
 scripts:
   - name: downloader
-    run_every: 1
+    run_every: 1440 # download images every day
     run_on_start: True
   - name: forest-monitoring
-    run_every: 1
+    run_every: 1440
     run_on_start: True
 apis:
   - name: analytics
@@ -18,8 +18,8 @@ apis:
     host: localhost
 uis:
   - name: map
-    # command: streamlit run main.py --server.address 0.0.0.0 --server.port 80
-    command: streamlit run main.py --server.address localhost
+    command: streamlit run main.py --server.address 0.0.0.0 --server.port 80
+    # command: streamlit run main.py --server.address localhost
     port: 8501
     env: # use api names as url placeholders
       ANALYTICS_URL: api.analytics
