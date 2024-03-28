@@ -15,11 +15,8 @@ from spai.config import SPAIVars
 
 vars = SPAIVars()
 
-# BASE_URL = "http://localhost"
-# ANALYTICS_URL = f'{BASE_URL}:{project.api_port("analytics")}'
-# XYZ_URL = f'{BASE_URL}:{project.api_port("xyz")}'
-ANALYTICS_URL = os.getenv("ANALYTICS_URL")
-XYZ_URL = os.getenv("XYZ_URL")
+ANALYTICS_URL = f'http://{os.getenv("ANALYTICS_URL")}'
+XYZ_URL = f'http://{os.getenv("XYZ_URL")}'
 
 
 VARIABLES_STRETCH = {
