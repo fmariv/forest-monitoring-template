@@ -12,8 +12,8 @@ vars = SPAIVars()
 
 
 if __name__ == "__main__":
-    sensor = "S2L2A"  # or 'S2L1C'
-    images = storage.list(f"{sensor}*.tif")
+    collection = "sentinel-2-l2a"
+    images = storage.list(f"{collection}*.tif")
     aoi = vars["AOI"]
     for image in tqdm(images, desc="Processing images..."):
         forest_monitoring(image, aoi, storage)
