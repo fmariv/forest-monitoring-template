@@ -2,7 +2,7 @@
 Script to run the forest monitoring pipeline
 """
 
-from spai.analytics import forest_monitoring
+from spai.analytics.forest_monitoring import forest_monitoring
 from spai.storage import Storage
 from tqdm import tqdm
 from spai.config import SPAIVars
