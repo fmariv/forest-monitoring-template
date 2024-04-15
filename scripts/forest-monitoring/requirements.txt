@@ -1,4 +1,4 @@
-spai
+spai>=2024.4.15
 rasterio
 geopandas
 Pillow
