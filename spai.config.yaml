@@ -1,14 +1,14 @@
 project: forest-monitoring-template
 storage:
   - name: data
-    type: s3
-scripts:
-  - name: downloader
-    run_every: 1440 # download images every day
-    run_on_start: True
-  - name: forest-monitoring
-    run_every: 1440
-    run_on_start: True
+    type: local
+# scripts:
+#   - name: downloader
+#     run_every: 1440 # download images every day
+#     run_on_start: True
+#   - name: forest-monitoring
+#     run_every: 1440
+#     run_on_start: True
 apis:
   - name: analytics
     port: 8021
@@ -17,10 +17,16 @@ apis:
     port: 8022
     host: localhost
 uis:
+  # - name: map_streamlit
+  #   command: streamlit run main.py --server.address 0.0.0.0 --server.port 80
+  #   # command: streamlit run main.py --server.address localhost # for local development
+  #   port: 8501
+  #   env: # use api names as url placeholders
+  #     ANALYTICS_URL: api.analytics
+  #     XYZ_URL: api.xyz
   - name: map
-    command: streamlit run main.py --server.address 0.0.0.0 --server.port 80
-    # command: streamlit run main.py --server.address localhost # for local development
-    port: 8501
-    env: # use api names as url placeholders
+    command: pnpm preview
+    port: 5173
+    env: 
       ANALYTICS_URL: api.analytics
       XYZ_URL: api.xyz
