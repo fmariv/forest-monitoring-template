@@ -25,7 +25,7 @@ uis:
   #     ANALYTICS_URL: api.analytics
   #     XYZ_URL: api.xyz
   - name: map
-    # command: pnpm dev # for local development
+    # command: npm run dev # for local development
     command: npm run build && npm run preview --host 0.0.0.0 --port 8080
     port: 5173
     env: 
