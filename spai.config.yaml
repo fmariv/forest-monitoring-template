@@ -1,7 +1,7 @@
 project: forest-monitoring-template
 storage:
   - name: data
-    type: local
+    type: s3
 scripts:
   - name: downloader
     run_every: 1440 # download images every day
