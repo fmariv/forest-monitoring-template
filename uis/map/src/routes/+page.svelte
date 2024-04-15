@@ -7,6 +7,7 @@
 	import { compareAsc, parseISO } from "date-fns";
 	import ImageLayer from "$components/map/ImageLayer.svelte";
 	import Analytics from "$components/Analytics.svelte";
+	import Slider from "$components/map/Slider.svelte";
 
 	export let data;
 
@@ -79,10 +80,35 @@
 					pane: "left",
 				}}
 			/>
+			<ImageLayer
+				XYZ_URL={xyz_url}
+				name="sat"
+				image={"sentinel-2-l2a_" + currentImageLeft + ".tif"}
+				options={{
+					maxZoom: 20,
+					pane: "left",
+				}}
+			/>
+			<ImageLayer
+				XYZ_URL={xyz_url}
+				name="sat"
+				image={"sentinel-2-l2a_" + currentImageRight + ".tif"}
+				options={{
+					maxZoom: 20,
+					pane: "right",
+				}}
+			/>
+			<Slider />
 		</Map>
 		<Timeline height={200} data={analytics} />
 	</div>
 	<div class="w-[200px]">
-		<Analytics {analytics} {aoi} date={currentImageRight} {xyz_url} />
+		<Analytics
+			{analytics}
+			{aoi}
+			date={currentImageRight}
+			left={currentImageLeft}
+			{xyz_url}
+		/>
 	</div>
 </div>

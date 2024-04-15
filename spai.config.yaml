@@ -25,7 +25,8 @@ uis:
   #     ANALYTICS_URL: api.analytics
   #     XYZ_URL: api.xyz
   - name: map
-    command: pnpm preview
+    # command: pnpm preview
+    command: pnpm dev
     port: 5173
     env: 
       ANALYTICS_URL: api.analytics

@@ -7,6 +7,7 @@
 	export let aoi;
 	export let date;
 	export let xyz_url;
+	export let left;
 
 	let selected = false;
 	const toggleAOI = () => {
@@ -26,7 +27,7 @@
 		<Forest size="100%" />
 	</button>
 	<h1>Monitoring of</h1>
-	<VegetationQuality {analytics} {date} {xyz_url} />
+	<VegetationQuality {analytics} {date} {xyz_url} {left} />
 </div>
 
 {#if selected}

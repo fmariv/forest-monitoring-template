@@ -8,6 +8,7 @@
 	export let date;
 	export let tooltip = "Vegetation Quality";
 	export let xyz_url;
+	export let left;
 
 	let options = {};
 	$: if (analytics && date) {
@@ -100,10 +101,22 @@
 	<ImageLayer
 		XYZ_URL={xyz_url}
 		name="vegetation"
-		image={"vegetation_masked_" + date + ".tif"}
+		image={"vegetation_masked_" + left + ".tif"}
 		options={{
 			maxZoom: 20,
 			pane: "left",
+		}}
+		bands={[1]}
+		stretch={[0, 1]}
+		palette="RdYlGn"
+	/>
+	<ImageLayer
+		XYZ_URL={xyz_url}
+		name="vegetation"
+		image={"vegetation_masked_" + date + ".tif"}
+		options={{
+			maxZoom: 20,
+			pane: "right",
 		}}
 		bands={[1]}
 		stretch={[0, 1]}
