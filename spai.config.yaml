@@ -2,13 +2,13 @@ project: forest-monitoring-template
 storage:
   - name: data
     type: local
-# scripts:
-#   - name: downloader
-#     run_every: 1440 # download images every day
-#     run_on_start: True
-#   - name: forest-monitoring
-#     run_every: 1440
-#     run_on_start: True
+scripts:
+  - name: downloader
+    run_every: 1440 # download images every day
+    run_on_start: True
+  - name: forest-monitoring
+    run_every: 1440
+    run_on_start: True
 apis:
   - name: analytics
     port: 8021
