@@ -9,6 +9,8 @@ scripts:
   - name: forest-monitoring
     run_every: 1440
     run_on_start: True
+    wait_for:
+      - downloader
 apis:
   - name: analytics
     port: 8021
