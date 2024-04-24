@@ -13,7 +13,7 @@
   export let left;
   export let selected = false;
 
-  let selectedAnalysis = "Vegetation";
+  export let selectedAnalysis;
 
   const toggleAOI = () => {
     selected = !selected;

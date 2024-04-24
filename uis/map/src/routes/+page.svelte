@@ -35,6 +35,10 @@
   function onChangeRight(e) {
     currentImageRight = sat_images.find((i) => i == e.target.value);
   }
+
+  let selectedAnalysis = "Vegetation Quality";
+
+  $: selectedAnalytics = analytics[selectedAnalysis];
 </script>
 
 <div class="w-screen h-screen flex flex-row gap-3 p-3">
@@ -100,15 +104,18 @@
       />
       <Slider />
     </Map>
-    <Timeline height={200} data={analytics} />
+    {#if selectedAnalytics}
+      <Timeline height={200} data={selectedAnalytics} />
+    {/if}
   </div>
   <div class="w-[200px]">
     <Analytics
-      {analytics}
+      analytics={selectedAnalytics}
       {aoi}
       date={currentImageRight}
       left={currentImageLeft}
       {xyz_url}
+      bind:selectedAnalysis
     />
   </div>
 </div>

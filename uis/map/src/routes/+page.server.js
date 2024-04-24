@@ -12,7 +12,9 @@ export async function load({ fetch }) {
   return {
     xyz_url,
     images,
-    analytics,
+    analytics: {
+      "Vegetation Quality": analytics,
+    },
     aoi,
   };
 }

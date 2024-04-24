@@ -3,7 +3,6 @@
 
   export let options;
   export let height;
-  $: console.log("options", options);
   const base_options = {
     series: [],
     labels: [],
