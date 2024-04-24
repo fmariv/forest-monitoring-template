@@ -2,7 +2,7 @@
   import ImageLayer from "$components/map/ImageLayer.svelte";
   import Pie from "$components/viz/Pie.svelte";
 
-  export let title = "Mock Quality";
+  export let name;
   export let analytics;
   export let date;
   export let xyz_url;
@@ -63,11 +63,11 @@
     };
   }
 
-  $: selected = selectedAnalysis === title;
+  $: selected = selectedAnalysis === name;
 </script>
 
 {#if selected}
-  <h3>{title}</h3>
+  <h3>{name}</h3>
   <Pie {options} height={300} />
 {/if}
 

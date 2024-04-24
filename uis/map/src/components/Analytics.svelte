@@ -2,6 +2,8 @@
   import VegetationQuality from "$components/analytics/VegetationQuality.svelte";
   import GeoJSONLayer from "$components/map/GeoJSONLayer.svelte";
   import Forest from "svelte-material-icons/Forest.svelte";
+  import MockButton from "./analytics/MockButton.svelte";
+  import MockQuality from "./analytics/MockQuality.svelte";
   import VegetationButton from "./analytics/VegetationButton.svelte";
 
   export let analytics;
@@ -31,6 +33,8 @@
   </button>
   <h1>Monitoring of</h1>
   <VegetationButton bind:selectedAnalysis name="Vegetation Quality" />
+  <MockButton bind:selectedAnalysis name="Mock Quality" />
+
   <VegetationQuality
     {analytics}
     {date}
@@ -38,6 +42,15 @@
     {left}
     {selectedAnalysis}
     name="Vegetation Quality"
+  />
+
+  <MockQuality
+    {analytics}
+    {date}
+    {xyz_url}
+    {left}
+    {selectedAnalysis}
+    name="Mock Quality"
   />
 </div>
 

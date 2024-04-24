@@ -1,25 +1,25 @@
 <script>
-  import Sprout from "svelte-material-icons/Sprout.svelte";
+  import HelpCircle from "svelte-material-icons/HelpCircle.svelte";
 
-  export let tooltip = "Mock Quality";
+  export let name;
 
   export let selectedAnalysis;
 
-  $: selected = selectedAnalysis === tooltip;
+  $: selected = selectedAnalysis === name;
 
   const click = () => {
-    selectedAnalysis === tooltip
+    selectedAnalysis === name
       ? (selectedAnalysis = "")
-      : (selectedAnalysis = tooltip);
+      : (selectedAnalysis = name);
   };
 </script>
 
 <button
-  data-tip={tooltip}
+  data-tip={name}
   class={`w-10 h-10 p-1 hover:bg-gray-100 ${
     selected ? "text-green-600" : "text-gray-800"
-  } ${tooltip && "tooltip tooltip-bottom"}`}
+  } ${name && "tooltip tooltip-bottom"}`}
   on:click={click}
 >
-  <Sprout size="100%" />
+  <HelpCircle size="100%" />
 </button>
