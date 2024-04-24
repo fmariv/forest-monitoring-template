@@ -11,6 +11,7 @@
 
   let options = {};
   $: if (analytics && date) {
+    console.log(analytics);
     options = {
       series: [
         analytics["Vegetation Ha"][date],
