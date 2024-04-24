@@ -1,13 +1,13 @@
 <script>
   import ImageLayer from "$components/map/ImageLayer.svelte";
   import Pie from "$components/viz/Pie.svelte";
+  import { selectedAnalysis } from "$stores/map/selectedAnalysis";
 
   export let name;
   export let analytics;
   export let date;
   export let xyz_url;
   export let left;
-  export let selectedAnalysis;
 
   let options = {};
   $: if (analytics && date) {
@@ -63,7 +63,8 @@
     };
   }
 
-  $: selected = selectedAnalysis === name;
+  $: selected = $selectedAnalysis === name;
+  $: if ($selectedAnalysis) selected = $selectedAnalysis === name;
 </script>
 
 {#if selected}

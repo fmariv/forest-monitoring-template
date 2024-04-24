@@ -3,7 +3,6 @@
   import GeoJSONLayer from "$components/map/GeoJSONLayer.svelte";
   import Forest from "svelte-material-icons/Forest.svelte";
   import MockButton from "./analytics/MockButton.svelte";
-  import MockQuality from "./analytics/MockQuality.svelte";
   import VegetationButton from "./analytics/VegetationButton.svelte";
 
   export let analytics;
@@ -12,8 +11,6 @@
   export let xyz_url;
   export let left;
   export let selected = false;
-
-  export let selectedAnalysis;
 
   const toggleAOI = () => {
     selected = !selected;
@@ -32,26 +29,25 @@
     <Forest size="100%" />
   </button>
   <h1>Monitoring of</h1>
-  <VegetationButton bind:selectedAnalysis name="Vegetation Quality" />
-  <MockButton bind:selectedAnalysis name="Vegetation Health" />
+
+  <VegetationButton name="Vegetation Quality" />
+  <MockButton name="Vegetation Health" />
 
   <VegetationQuality
-    {analytics}
+    analytics={analytics["Vegetation Quality"]}
     {date}
     {xyz_url}
     {left}
-    {selectedAnalysis}
     name="Vegetation Quality"
   />
 
-  <MockQuality
-    {analytics}
+  <!-- <MockQuality
+    analytics={analytics["Vegetation Health"]}
     {date}
     {xyz_url}
     {left}
-    {selectedAnalysis}
     name="Vegetation Health"
-  />
+  /> -->
 </div>
 
 {#if selected}

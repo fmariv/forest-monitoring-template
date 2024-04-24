@@ -1,16 +1,15 @@
 <script>
+  import { selectedAnalysis } from "$stores/map/selectedAnalysis";
   import HelpCircle from "svelte-material-icons/HelpCircle.svelte";
 
   export let name;
 
-  export let selectedAnalysis;
-
-  $: selected = selectedAnalysis === name;
+  $: selected = $selectedAnalysis === name;
+  $: if ($selectedAnalysis) selected = $selectedAnalysis === name;
 
   const click = () => {
-    selectedAnalysis === name
-      ? (selectedAnalysis = "")
-      : (selectedAnalysis = name);
+    const currentSelection = $selectedAnalysis === name ? "" : name;
+    $selectedAnalysis = currentSelection;
   };
 </script>
 

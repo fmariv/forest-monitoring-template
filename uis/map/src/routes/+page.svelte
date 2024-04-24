@@ -7,6 +7,7 @@
   import Map from "$components/map/Map.svelte";
   import Slider from "$components/map/Slider.svelte";
   import TileLayer from "$components/map/TileLayer.svelte";
+  import { selectedAnalysis } from "$stores/map/selectedAnalysis";
   import { compareAsc, parseISO } from "date-fns";
 
   export let data;
@@ -14,9 +15,6 @@
   $: ({ images, analytics, xyz_url, aoi } = data);
 
   let layer;
-
-  // $: console.log(images);
-  $: console.log(analytics);
 
   $: sat_images = images
     .filter((image) => image.includes("sentinel-2-l2a"))
@@ -35,9 +33,6 @@
   function onChangeRight(e) {
     currentImageRight = sat_images.find((i) => i == e.target.value);
   }
-
-  let selectedAnalysis = "Vegetation Quality";
-  $: selectedAnalytics = analytics[selectedAnalysis];
 </script>
 
 <div class="w-screen h-screen flex flex-row gap-3 p-3">
@@ -103,18 +98,17 @@
       />
       <Slider />
     </Map>
-    {#if selectedAnalytics}
-      <Timeline height={200} data={selectedAnalytics} />
+    {#if $selectedAnalysis}
+      <Timeline height={200} {analytics} />
     {/if}
   </div>
   <div class="w-[200px]">
     <Analytics
-      analytics={selectedAnalytics}
+      {analytics}
       {aoi}
       date={currentImageRight}
       left={currentImageLeft}
       {xyz_url}
-      bind:selectedAnalysis
     />
   </div>
 </div>

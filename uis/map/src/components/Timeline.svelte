@@ -1,12 +1,15 @@
 <script>
   import Lines from "$components/viz/Lines.svelte";
+  import { selectedAnalysis } from "$stores/map/selectedAnalysis";
   import { compareAsc, parseISO } from "date-fns";
 
   export let height;
-  export let data;
+  export let analytics;
+
+  $: displayedAnalytics = analytics[$selectedAnalysis];
 
   let options = {};
-  $: sorted_dates = Object.keys(data.Total).sort((a, b) =>
+  $: sorted_dates = Object.keys(displayedAnalytics.Total).sort((a, b) =>
     compareAsc(parseISO(a), parseISO(b))
   );
 
@@ -21,13 +24,17 @@
         {
           name: "Vegetation Ha",
           data: sorted_dates.map(
-            (date) => (100 * data["Vegetation Ha"][date]) / data.Total[date]
+            (date) =>
+              (100 * displayedAnalytics["Vegetation Ha"][date]) /
+              displayedAnalytics.Total[date]
           ),
         },
         {
           name: "Not Vegetation Ha",
           data: sorted_dates.map(
-            (date) => (100 * data["Not Vegetation Ha"][date]) / data.Total[date]
+            (date) =>
+              (100 * displayedAnalytics["Not Vegetation Ha"][date]) /
+              displayedAnalytics.Total[date]
           ),
         },
       ],
