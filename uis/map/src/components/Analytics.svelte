@@ -33,7 +33,7 @@
   </button>
   <h1>Monitoring of</h1>
   <VegetationButton bind:selectedAnalysis name="Vegetation Quality" />
-  <MockButton bind:selectedAnalysis name="Mock Quality" />
+  <MockButton bind:selectedAnalysis name="Vegetation Health" />
 
   <VegetationQuality
     {analytics}
@@ -50,7 +50,7 @@
     {xyz_url}
     {left}
     {selectedAnalysis}
-    name="Mock Quality"
+    name="Vegetation Health"
   />
 </div>
 

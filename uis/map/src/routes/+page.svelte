@@ -16,7 +16,7 @@
   let layer;
 
   // $: console.log(images);
-  // $: console.log(analytics);
+  $: console.log(analytics);
 
   $: sat_images = images
     .filter((image) => image.includes("sentinel-2-l2a"))
@@ -37,7 +37,6 @@
   }
 
   let selectedAnalysis = "Vegetation Quality";
-
   $: selectedAnalytics = analytics[selectedAnalysis];
 </script>
 
