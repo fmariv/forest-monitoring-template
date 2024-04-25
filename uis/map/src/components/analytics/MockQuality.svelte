@@ -28,7 +28,7 @@
       labels,
       colors,
       chart: {
-        type: "pie",
+        type: "donut",
       },
       tooltip: {
         y: {

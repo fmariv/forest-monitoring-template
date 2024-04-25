@@ -102,7 +102,7 @@
       <Timeline height={200} {analytics} />
     {/if}
   </div>
-  <div class="w-[200px]">
+  <div class="w-[300px]">
     <Analytics
       {analytics}
       {aoi}
