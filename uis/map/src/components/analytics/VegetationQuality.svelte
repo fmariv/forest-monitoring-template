@@ -8,6 +8,7 @@
   export let date;
   export let xyz_url;
   export let left;
+  $: console.log(JSON.stringify(analytics));
 
   let options = {};
   $: if (analytics && date) {

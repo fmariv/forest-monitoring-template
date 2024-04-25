@@ -3,6 +3,7 @@
   import GeoJSONLayer from "$components/map/GeoJSONLayer.svelte";
   import Forest from "svelte-material-icons/Forest.svelte";
   import MockButton from "./analytics/MockButton.svelte";
+  import MockQuality from "./analytics/MockQuality.svelte";
   import VegetationButton from "./analytics/VegetationButton.svelte";
 
   export let analytics;
@@ -41,13 +42,13 @@
     name="Vegetation Quality"
   />
 
-  <!-- <MockQuality
+  <MockQuality
     analytics={analytics["Vegetation Health"]}
     {date}
     {xyz_url}
     {left}
     name="Vegetation Health"
-  /> -->
+  />
 </div>
 
 {#if selected}

@@ -9,14 +9,27 @@
   export let xyz_url;
   export let left;
 
+  $: console.log(JSON.stringify(analytics));
+
   let options = {};
   $: if (analytics && date) {
+    const categories = Object.keys(analytics).filter((key) => key !== "Total");
+    const series = categories.map((category) => analytics[category][date]);
+    const labels = categories;
+
+    // Example of cycling through a predefined set of colors
+    const baseColors = ["#25dd47", "#ff0000", "#0000ff", "#ffa500"]; // Extend this array as needed
+    const colors = categories.map(
+      (_, index) => baseColors[index % baseColors.length]
+    );
+
     options = {
-      series: [
-        analytics["Vegetation Ha"][date],
-        analytics["Not Vegetation Ha"][date],
-      ],
-      labels: ["Vegetation Ha", "Not Vegetation Ha"],
+      series,
+      labels,
+      colors,
+      chart: {
+        type: "pie",
+      },
       tooltip: {
         y: {
           formatter: function (value) {
@@ -24,14 +37,6 @@
           },
         },
       },
-      dataLabels: {
-        formatter: function (val, opts) {
-          return parseInt(0.01 * val * analytics.Total[date]).toLocaleString(
-            "en-US"
-          );
-        },
-      },
-      colors: ["#25dd47", "#ff0000"],
       plotOptions: {
         pie: {
           donut: {
@@ -47,9 +52,10 @@
                 label: "Total",
                 color: "#373d3f",
                 formatter: function (w) {
-                  const total = w.globals.seriesTotals.reduce((a, b) => {
-                    return a + b;
-                  }, 0);
+                  const total = w.globals.seriesTotals.reduce(
+                    (a, b) => a + b,
+                    0
+                  );
                   return parseInt(total).toLocaleString("en-US") + "Has";
                 },
               },
