@@ -13,32 +13,31 @@
     compareAsc(parseISO(a), parseISO(b))
   );
 
-  $: if (sorted_dates)
-    options = {
-      colors: ["#25dd47", "#ff0000"],
-      xaxis: {
-        categories: sorted_dates,
-        type: "datetime",
-      },
-      series: [
-        {
-          name: "Vegetation Ha",
-          data: sorted_dates.map(
-            (date) =>
-              (100 * displayedAnalytics["Vegetation Ha"][date]) /
-              displayedAnalytics.Total[date]
-          ),
-        },
-        {
-          name: "Not Vegetation Ha",
-          data: sorted_dates.map(
-            (date) =>
-              (100 * displayedAnalytics["Not Vegetation Ha"][date]) /
-              displayedAnalytics.Total[date]
-          ),
-        },
-      ],
-    };
+  $: series = Object.keys(displayedAnalytics)
+    .filter((key) => key !== "Total") // Exclude the "Total" key
+    .map((category) => ({
+      name: category,
+      data: sorted_dates.map((date) => {
+        const categoryValue = displayedAnalytics[category][date];
+        const totalValue = displayedAnalytics.Total[date];
+        return (100 * categoryValue) / totalValue; // Calculate percentage
+      }),
+    }))
+    .sort((a, b) => {
+      // Calculate the sum of each series
+      const sumA = a.data.reduce((acc, curr) => acc + curr, 0);
+      const sumB = b.data.reduce((acc, curr) => acc + curr, 0);
+      return sumB - sumA; // Sort from high to low
+    });
+
+  $: options = {
+    colors: ["#25dd47", "#ff0000", "#0000ff", "#ffa500"], // Adjust colors as needed
+    xaxis: {
+      categories: sorted_dates,
+      type: "datetime",
+    },
+    series: series,
+  };
 </script>
 
 <Lines {options} {height} />
