@@ -5,6 +5,9 @@
 
   export let height;
   export let analytics;
+  export let colors;
+
+  $: selectedColors = colors[$selectedAnalysis];
 
   $: displayedAnalytics = analytics[$selectedAnalysis];
 
@@ -31,7 +34,7 @@
     });
 
   $: options = {
-    colors: ["#25dd47", "#ff0000", "#0000ff", "#ffa500"], // Adjust colors as needed
+    colors: selectedColors,
     xaxis: {
       categories: sorted_dates,
       type: "datetime",

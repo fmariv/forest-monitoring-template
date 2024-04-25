@@ -12,7 +12,7 @@
 
   export let data;
 
-  $: ({ images, analytics, xyz_url, aoi } = data);
+  $: ({ images, analytics, xyz_url, aoi, colors } = data);
 
   let layer;
 
@@ -99,7 +99,7 @@
       <Slider />
     </Map>
     {#if $selectedAnalysis}
-      <Timeline height={200} {analytics} />
+      <Timeline height={200} {analytics} {colors} />
     {/if}
   </div>
   <div class="w-[300px]">
@@ -109,6 +109,7 @@
       date={currentImageRight}
       left={currentImageLeft}
       {xyz_url}
+      {colors}
     />
   </div>
 </div>

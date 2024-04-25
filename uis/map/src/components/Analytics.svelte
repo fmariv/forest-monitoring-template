@@ -12,6 +12,7 @@
   export let xyz_url;
   export let left;
   export let selected = false;
+  export let colors;
 
   const toggleAOI = () => {
     selected = !selected;
@@ -40,6 +41,7 @@
     {xyz_url}
     {left}
     name="Vegetation Quality"
+    baseColors={colors["Vegetation Quality"]}
   />
 
   <MockQuality
@@ -48,6 +50,7 @@
     {xyz_url}
     {left}
     name="Vegetation Health"
+    baseColors={colors["Vegetation Health"]}
   />
 </div>
 

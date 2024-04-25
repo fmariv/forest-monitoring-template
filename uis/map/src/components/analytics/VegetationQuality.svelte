@@ -8,7 +8,7 @@
   export let date;
   export let xyz_url;
   export let left;
-  $: console.log(JSON.stringify(analytics));
+  export let baseColors = ["#25dd47", "#ff0000", "#0000ff", "#ffa500"];
 
   let options = {};
   $: if (analytics && date) {
@@ -16,8 +16,6 @@
     const series = categories.map((category) => analytics[category][date]);
     const labels = categories;
 
-    // Example of cycling through a predefined set of colors
-    const baseColors = ["#25dd47", "#ff0000", "#0000ff", "#ffa500"]; // Extend this array as needed
     const colors = categories.map(
       (_, index) => baseColors[index % baseColors.length]
     );
