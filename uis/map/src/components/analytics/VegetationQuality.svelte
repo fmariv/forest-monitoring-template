@@ -1,6 +1,6 @@
 <script>
 	import Sprout from 'svelte-material-icons/Sprout.svelte';
-	import AccountArrowUp from 'svelte-material-icons/AccountArrowUp.svelte';
+	import TrendingUp from 'svelte-material-icons/TrendingUp.svelte';
 	import Pie from '$components/viz/Pie.svelte';
 	import ImageLayer from '$components/map/ImageLayer.svelte';
 	import { analyticsStore, currentAnalytic } from '$stores/analytics.js';
@@ -143,23 +143,23 @@
 </script>
 
 <button
-	data-tip="Vegetation Quality"
+	data-tip="Vegetation Growth"
 	class={`w-10 h-10 p-1 hover:bg-gray-100 ${selected ? 'text-green-600' : 'text-gray-800'} ${
 		'Vegetation Quality' && 'tooltip tooltip-bottom'
 	}`}
 	on:click={fetchGrowth}
 >
-	<Sprout size="100%" />
+	<TrendingUp size="100%" />
 </button>
 
 <button
-	data-tip="Vegetation Growth"
+	data-tip="Vegetation Quality"
 	class={`w-10 h-10 p-1 hover:bg-gray-100 ${selected ? 'text-green-600' : 'text-gray-800'} ${
 		'Vegetation growth' && 'tooltip tooltip-bottom'
 	}`}
 	on:click={fetchQuality}
 >
-	<AccountArrowUp size="100%" />
+	<Sprout size="100%" />
 </button>
 
 {#if selected}

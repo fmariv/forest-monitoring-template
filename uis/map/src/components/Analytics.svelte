@@ -1,5 +1,5 @@
 <script>
-	import Forest from 'svelte-material-icons/Forest.svelte';
+	import Map from 'svelte-material-icons/Map.svelte';
 	import GeoJSONLayer from '$components/map/GeoJSONLayer.svelte';
 	import VegetationQuality from '$components/analytics/VegetationQuality.svelte';
 
@@ -25,7 +25,7 @@
 		on:click={toggleAOI}
 		data-tip="AoI"
 	>
-		<Forest size="100%" />
+		<Map size="100%" />
 	</button>
 	<h1>Monitoring of</h1>
 	<VegetationQuality {analytics} {date} {xyz_url} {analytics_url} {left} />
