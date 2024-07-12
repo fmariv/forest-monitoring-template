@@ -9,7 +9,6 @@ function createImageLayers() {
 
 	const removeImageLayer = (name, pane) => {
 		update((current) => {
-			console.log("iepa", pane, current[pane])
 			if (pane && current[pane]) {
 				const layer = current[pane][name];
 				layer?.remove();

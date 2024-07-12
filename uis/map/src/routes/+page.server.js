@@ -13,6 +13,7 @@ export async function load({fetch}) {
 		xyz_url,
 		images,
 		analytics,
+		analytics_url,
 		aoi
 	};
 }
