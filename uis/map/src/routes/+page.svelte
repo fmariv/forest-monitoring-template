@@ -3,7 +3,7 @@
 	import TileLayer from '$components/map/TileLayer.svelte';
 	import LayersControl from '$components/map/LayersControl.svelte';
 	import DateSelector from '$components/map/DateSelector.svelte';
-	import Timeline from '$components/Timeline.svelte';
+	import Timeline from '$components/analytics/Timeline.svelte';
 	import { compareAsc, parseISO } from 'date-fns';
 	import ImageLayer from '$components/map/ImageLayer.svelte';
 	import Analytics from '$components/Analytics.svelte';
@@ -48,9 +48,9 @@
 			]}
 			{aoi}
 		>
-			{#if layer == 'streets'}
+			{#if layer == 'light'}
 				<TileLayer
-					url={'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}'}
+					url={'https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png'}
 					options={{ maxZoom: 20, zIndex: 1 }}
 				/>
 			{:else if layer == 'satellite'}
@@ -58,8 +58,18 @@
 					url={'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'}
 					options={{ maxZoom: 20, zIndex: 1 }}
 				/>
+			{:else if layer == 'streets'}
+				<TileLayer
+					url={'https://tiles.stadiamaps.com/tiles/osm_bright/{z}/{x}/{y}{r}.png'}
+					options={{ maxZoom: 20, zIndex: 1 }}
+				/>
+			{:else if layer == 'dark'}
+				<TileLayer
+					url={'https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png'}
+					options={{ maxZoom: 20, zIndex: 1 }}
+				/>
 			{/if}
-			<LayersControl layers={['streets', 'satellite']} bind:layer />
+			<LayersControl layers={['light', 'dark', 'streets', 'satellite']} bind:layer />
 			<DateSelector dates={sat_images} onChange={onChangeLeft} selected={currentImageLeft} />
 			<DateSelector
 				dates={sat_images}
@@ -96,7 +106,9 @@
 			/>
 			<Slider />
 		</Map>
-		<Timeline height={200} />
+		{#if $currentAnalytic !== ''}
+			<Timeline height={200} />
+		{/if}
 	</div>
 	<div class="w-[200px]">
 		<Analytics

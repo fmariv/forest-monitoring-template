@@ -18,6 +18,9 @@
 	$: stretch = [0, 1];
 	$: palette = 'RdYlGn';
 
+	let selectedButton = 'growth';
+	let selected = true;
+
 	let options = {};
 	$: if (analytics && date && title === 'Vegetation Growth') {
 		options = {
@@ -112,6 +115,15 @@
 	}
 
 	const fetchQuality = async () => {
+		if (selected && $currentAnalytic === 'Vegetation Quality') {
+			selected = false;
+			selectedButton = '';
+			currentAnalytic.set('')
+			return;
+		}
+		if (!selected) {
+			selected = true;
+		}
 		const response = await fetch(`${analytics_url}/AOI_Vegetation_Quality`);
 		const data = await response.json();
 		analytics = data;
@@ -121,9 +133,19 @@
 		bands = [1, 2, 3];
 		stretch = [0, 255];
 		palette = 'RdYlGn';
+		selectedButton = 'quality';
 	};
 
 	const fetchGrowth = async () => {
+		if (selected && $currentAnalytic === 'Vegetation Growth') {
+			selected = false;
+			selectedButton = '';
+			currentAnalytic.set('')
+			return;
+		}
+		if (!selected) {
+			selected = true;
+		}
 		const response = await fetch(`${analytics_url}/AOI_Vegetation_Growth`);
 		const data = await response.json();
 		analytics = data;
@@ -133,20 +155,14 @@
 		bands = [1];
 		stretch = [0, 1];
 		palette = 'RdYlGn';
-	};
-
-	let selected = true;
-
-	const click = () => {
-		selected = !selected;
+		selectedButton = 'growth';
 	};
 </script>
 
 <button
 	data-tip="Vegetation Growth"
-	class={`w-10 h-10 p-1 hover:bg-gray-100 ${selected ? 'text-green-600' : 'text-gray-800'} ${
-		'Vegetation Quality' && 'tooltip tooltip-bottom'
-	}`}
+	class={`w-10 h-10 p-1 hover:bg-gray-100 ${selectedButton === 'growth' ? 'text-green-600' : 'text-gray-800'} tooltip tooltip-bottom`}
+
 	on:click={fetchGrowth}
 >
 	<TrendingUp size="100%" />
@@ -154,9 +170,8 @@
 
 <button
 	data-tip="Vegetation Quality"
-	class={`w-10 h-10 p-1 hover:bg-gray-100 ${selected ? 'text-green-600' : 'text-gray-800'} ${
-		'Vegetation growth' && 'tooltip tooltip-bottom'
-	}`}
+	class={`w-10 h-10 p-1 hover:bg-gray-100 ${selectedButton === 'quality' ? 'text-green-600' : 'text-gray-800'} tooltip tooltip-bottom`}
+
 	on:click={fetchQuality}
 >
 	<Sprout size="100%" />

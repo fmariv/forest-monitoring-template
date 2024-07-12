@@ -1,7 +1,7 @@
 <script>
 	import Map from 'svelte-material-icons/Map.svelte';
 	import GeoJSONLayer from '$components/map/GeoJSONLayer.svelte';
-	import VegetationQuality from '$components/analytics/VegetationQuality.svelte';
+	import ForestMonitoring from '$components/analytics/ForestMonitoring.svelte';
 
 	export let analytics;
 	export let aoi;
@@ -23,12 +23,12 @@
 			selected ? 'text-green-600' : 'text-gray-800'
 		}`}
 		on:click={toggleAOI}
-		data-tip="AoI"
+		data-tip="Area of Interest"
 	>
 		<Map size="100%" />
 	</button>
 	<h1>Monitoring of</h1>
-	<VegetationQuality {analytics} {date} {xyz_url} {analytics_url} {left} />
+	<ForestMonitoring {analytics} {date} {xyz_url} {analytics_url} {left} />
 </div>
 
 {#if selected}

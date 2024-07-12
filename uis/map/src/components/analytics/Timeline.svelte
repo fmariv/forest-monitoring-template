@@ -17,7 +17,7 @@
 	$: if (sorted_dates)
 		if (analytic === 'Vegetation Growth') {
 			options = {
-				colors: ['#25dd47', '#ff0000'],
+				colors: ['#36A203', '#C95C10'],
 				xaxis: {
 					categories: sorted_dates,
 					type: 'datetime'
@@ -37,18 +37,18 @@
 			};
 		} else if (analytic === 'Vegetation Quality') {
 			options = {
-				colors: ['#ff0000', '#90ee90', '#ffff00', '#006400'], // Rojo, Verde claro, Amarillo, Azul, Verde oscuro
+				colors: ['#36A203','#72D001', '#FAE601', '#C95C10'],
 				xaxis: {
 					categories: sorted_dates,
 					type: 'datetime'
 				},
 				series: [
 					{
-						name: 'Bare ground',
+						name: 'Very Healthy Vegetation',
 						data: sorted_dates.map((date) => ({
 							x: date,
-							y: data['Bare Ground'][date]
-								? ((data['Bare Ground'][date] / data['Total'][date]) * 100).toFixed(2)
+							y: data['Very Health Vegetation'][date]
+								? ((data['Very Health Vegetation'][date] / data['Total'][date]) * 100).toFixed(2)
 								: 0
 						}))
 					},
@@ -74,14 +74,15 @@
 						}))
 					},
 					{
-						name: 'Very Health Vegetation',
+						name: 'Bare ground',
 						data: sorted_dates.map((date) => ({
 							x: date,
-							y: data['Very Health Vegetation'][date]
-								? ((data['Very Health Vegetation'][date] / data['Total'][date]) * 100).toFixed(2)
+							y: data['Bare Ground'][date]
+								? ((data['Bare Ground'][date] / data['Total'][date]) * 100).toFixed(2)
 								: 0
 						}))
-					}
+					},
+					
 				]
 			};
 		}
