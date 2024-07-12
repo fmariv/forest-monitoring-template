@@ -39,7 +39,7 @@
 
 <div class="w-screen h-screen flex flex-row gap-3 p-3">
 	<div class="flex flex-col flex-1 gap-3">
-		<!-- <Map
+		<Map
 			zoom={6}
 			panes={[
 				{ name: 'aoi', zIndex: 9999 },
@@ -95,7 +95,7 @@
 				}}
 			/>
 			<Slider />
-		</Map> -->
+		</Map>
 		<Timeline height={200} />
 	</div>
 	<div class="w-[200px]">
