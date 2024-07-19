@@ -2,8 +2,6 @@
 Script to download satellite images 
 """
 
-import os
-
 from spai.data.satellite import download_satellite_imagery, explore_satellite_imagery
 from spai.storage import Storage
 from spai.config import SPAIVars
@@ -15,15 +13,14 @@ vars = SPAIVars()
 if __name__ == "__main__":
     # explore available images
     print("Looking for images in the last month")
-    # aoi = gpd.GeoDataFrame.from_features(project.aoi["features"])
     aoi = vars["AOI"]
     dates = vars["DATES"]
     images = explore_satellite_imagery(aoi, dates, cloud_cover=10)
 
-    if len(images) == 0:
+    if not images:
         raise ValueError("No images found")
 
-    # download images and save locally
+    # download images and save them in the storage
     collection = "sentinel-2-l2a"
     print("Found", len(images), f"image{'s' if len(images) > 1 else ''}")
     for image in images:

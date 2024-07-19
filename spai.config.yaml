@@ -1,7 +1,7 @@
 project: forest-monitoring-template
 storage:
   - name: data
-    type: local
+    type: s3
 scripts:
   - name: downloader
     run_every: 1440 # download images every day
@@ -20,8 +20,8 @@ apis:
     host: localhost
 uis:
   - name: map
-    command: npm run dev # for local development
-    # command: npm run deploy
+    # command: npm run dev # for local development
+    command: npm run deploy
     port: 5173
     runtime: node
     env:
