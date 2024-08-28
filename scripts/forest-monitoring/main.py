@@ -14,6 +14,10 @@ vars = SPAIVars()
 if __name__ == "__main__":
     collection = "sentinel-2-l2a"
     images = storage.list(f"{collection}*.tif")
+
+    if not images:
+        raise ValueError("No images found for the given AoI. The process will stop.")
+
     aoi = vars["AOI"]
     for image in tqdm(images, desc="Processing images..."):
         date = image.split("_")[1].split(".")[0]  # Extract date from image name
