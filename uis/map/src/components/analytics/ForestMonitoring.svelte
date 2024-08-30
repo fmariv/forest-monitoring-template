@@ -74,7 +74,7 @@
 				analytics['Bare Ground'][date],
 				analytics['Healthy Vegetation'][date],
 				analytics['Sparse or Unhealthy Vegetation'][date],
-				analytics['Very Health Vegetation'][date]
+				analytics['Very Healthy Vegetation'][date]
 			],
 			labels: [
 				'Bare ground',
@@ -118,7 +118,7 @@
 		if (selected && $currentAnalytic === 'Vegetation Quality') {
 			selected = false;
 			selectedButton = '';
-			currentAnalytic.set('')
+			currentAnalytic.set('');
 			return;
 		}
 		if (!selected) {
@@ -140,7 +140,7 @@
 		if (selected && $currentAnalytic === 'Vegetation Growth') {
 			selected = false;
 			selectedButton = '';
-			currentAnalytic.set('')
+			currentAnalytic.set('');
 			return;
 		}
 		if (!selected) {
@@ -162,7 +162,6 @@
 <button
 	data-tip="Vegetation Growth"
 	class={`w-10 h-10 p-1 hover:bg-gray-100 ${selectedButton === 'growth' ? 'text-green-600' : 'text-gray-800'} tooltip tooltip-bottom`}
-
 	on:click={fetchGrowth}
 >
 	<TrendingUp size="100%" />
@@ -171,7 +170,6 @@
 <button
 	data-tip="Vegetation Quality"
 	class={`w-10 h-10 p-1 hover:bg-gray-100 ${selectedButton === 'quality' ? 'text-green-600' : 'text-gray-800'} tooltip tooltip-bottom`}
-
 	on:click={fetchQuality}
 >
 	<Sprout size="100%" />

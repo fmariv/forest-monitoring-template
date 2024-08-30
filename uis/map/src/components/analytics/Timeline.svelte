@@ -37,7 +37,7 @@
 			};
 		} else if (analytic === 'Vegetation Quality') {
 			options = {
-				colors: ['#36A203','#72D001', '#FAE601', '#C95C10'],
+				colors: ['#36A203', '#72D001', '#FAE601', '#C95C10'],
 				xaxis: {
 					categories: sorted_dates,
 					type: 'datetime'
@@ -47,8 +47,8 @@
 						name: 'Very Healthy Vegetation',
 						data: sorted_dates.map((date) => ({
 							x: date,
-							y: data['Very Health Vegetation'][date]
-								? ((data['Very Health Vegetation'][date] / data['Total'][date]) * 100).toFixed(2)
+							y: data['Very Healthy Vegetation'][date]
+								? ((data['Very Healthy Vegetation'][date] / data['Total'][date]) * 100).toFixed(2)
 								: 0
 						}))
 					},
@@ -81,8 +81,7 @@
 								? ((data['Bare Ground'][date] / data['Total'][date]) * 100).toFixed(2)
 								: 0
 						}))
-					},
-					
+					}
 				]
 			};
 		}
