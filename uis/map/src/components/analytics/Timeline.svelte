@@ -37,7 +37,7 @@
 			};
 		} else if (analytic === 'Vegetation Quality') {
 			options = {
-				colors: ['#36A203', '#72D001', '#FAE601', '#C95C10'],
+				colors: ['#236902', '#72D001', '#FAE601', '#C95C10'],
 				xaxis: {
 					categories: sorted_dates,
 					type: 'datetime'

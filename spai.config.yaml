@@ -3,14 +3,9 @@ storage:
   - name: data
     type: s3
 scripts:
-  - name: downloader
-    run_every: 1440 # download images every day
-    run_on_start: True
   - name: forest-monitoring
-    run_every: 1440
+    run_every: 1440 # download and process images every day
     run_on_start: True
-    wait_for:
-      - downloader
 apis:
   - name: analytics
     port: 8021
