@@ -28,7 +28,8 @@
 	// Check if there are no images available
 	$: if (sat_images.length === 0) {
 		errorMessage = 'No images or layers have been found.';
-		// alert(errorMessage);
+	} else if (typeof analytics === 'object' && 'detail' in analytics) {
+		errorMessage = 'No vegetation have been found.';
 	}
 
 	let currentImageLeft, currentImageRight;
@@ -120,13 +121,15 @@
 		{/if}
 	</div>
 	<div class="w-[200px]">
-		<Analytics
-			{analytics}
-			{aoi}
-			date={currentImageRight}
-			left={currentImageLeft}
-			{xyz_url}
-			{analytics_url}
-		/>
+		{#if !errorMessage}
+			<Analytics
+				{analytics}
+				{aoi}
+				date={currentImageRight}
+				left={currentImageLeft}
+				{xyz_url}
+				{analytics_url}
+			/>
+		{/if}
 	</div>
 </div>
