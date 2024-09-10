@@ -7,7 +7,7 @@
 	export let aoi;
 	export let date;
 	export let xyz_url;
-	export let analytics_url;
+	export let api_url;
 	export let left;
 
 	let selected = false;
@@ -28,7 +28,7 @@
 		<Map size="100%" />
 	</button>
 	<h1>Monitoring of</h1>
-	<ForestMonitoring {analytics} {date} {xyz_url} {analytics_url} {left} />
+	<ForestMonitoring {analytics} {date} {xyz_url} {api_url} {left} />
 </div>
 
 {#if selected}

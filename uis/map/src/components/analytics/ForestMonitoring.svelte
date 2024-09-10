@@ -9,7 +9,7 @@
 	export let analytics;
 	export let date;
 	export let xyz_url;
-	export let analytics_url;
+	export let api_url;
 	export let left;
 
 	$: title = $currentAnalytic;
@@ -124,7 +124,7 @@
 		if (!selected) {
 			selected = true;
 		}
-		const response = await fetch(`${analytics_url}/AOI_Vegetation_Quality`);
+		const response = await fetch(`${api_url}/analytics/AOI_Vegetation_Quality`);
 		const data = await response.json();
 		analytics = data;
 		analyticsStore.set(analytics);
@@ -146,7 +146,7 @@
 		if (!selected) {
 			selected = true;
 		}
-		const response = await fetch(`${analytics_url}/AOI_Vegetation_Growth`);
+		const response = await fetch(`${api_url}/analytics/AOI_Vegetation_Growth`);
 		const data = await response.json();
 		analytics = data;
 		analyticsStore.set(analytics);
