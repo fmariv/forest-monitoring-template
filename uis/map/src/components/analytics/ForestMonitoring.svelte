@@ -35,7 +35,7 @@
 			},
 			dataLabels: {
 				formatter: function (val, opts) {
-					return parseInt(0.01 * val * analytics.Total['2020-01-08']).toLocaleString('en-US');
+					return parseInt(0.01 * val * analytics.Total[date]).toLocaleString('en-US');
 				}
 			},
 			colors: ['#25dd47', '#ff0000'],
@@ -68,7 +68,7 @@
 				position: 'bottom'
 			}
 		};
-	} else if (analytics && date && title === 'Vegetation Quality') {
+	} else if (analytics && date && title === 'Vegetation Health') {
 		options = {
 			series: [
 				analytics['Bare Ground'][date],
@@ -115,7 +115,7 @@
 	}
 
 	const fetchQuality = async () => {
-		if (selected && $currentAnalytic === 'Vegetation Quality') {
+		if (selected && $currentAnalytic === 'Vegetation Health') {
 			selected = false;
 			selectedButton = '';
 			currentAnalytic.set('');
@@ -128,7 +128,7 @@
 		const data = await response.json();
 		analytics = data;
 		analyticsStore.set(analytics);
-		currentAnalytic.set('Vegetation Quality');
+		currentAnalytic.set('Vegetation Health');
 		image = 'quality_masked_rgb_';
 		bands = [1, 2, 3];
 		stretch = [0, 255];
@@ -168,7 +168,7 @@
 </button>
 
 <button
-	data-tip="Vegetation Quality"
+	data-tip="Vegetation Health"
 	class={`w-10 h-10 p-1 hover:bg-gray-100 ${selectedButton === 'quality' ? 'text-green-600' : 'text-gray-800'} tooltip tooltip-bottom`}
 	on:click={fetchQuality}
 >

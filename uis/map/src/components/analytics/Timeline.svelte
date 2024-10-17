@@ -35,7 +35,7 @@
 					}
 				]
 			};
-		} else if (analytic === 'Vegetation Quality') {
+		} else if (analytic === 'Vegetation Health') {
 			options = {
 				colors: ['#236902', '#72D001', '#FAE601', '#C95C10'],
 				xaxis: {
