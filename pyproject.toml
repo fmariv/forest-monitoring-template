@@ -27,4 +27,5 @@ dependencies = [
     "spai==2025.8.6.post2",
     "tqdm>=4.67.1",
     "uvicorn==0.35.0",
+    "minio==7.1.15"
 ]
