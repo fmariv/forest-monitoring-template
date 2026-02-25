@@ -4,7 +4,6 @@ storage:
     type: s3
 scripts:
   - name: forest-monitoring
-    run_every: 1440 # download and process images every day
     run_on_start: True
 apis:
   - name: api
@@ -13,7 +12,6 @@ apis:
     autoscaling:
       min: 1
       max: 1
-      keep_alive: 60
 uis:
   - name: map
     # command: npm run dev # for local development
@@ -23,6 +21,5 @@ uis:
     autoscaling:
       min: 1
       max: 1
-      keep_alive: 60
     env:
       API_URL: api.api
