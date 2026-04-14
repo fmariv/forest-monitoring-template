@@ -49,90 +49,94 @@
 	}
 </script>
 
-{#if errorMessage}
-	<div
-		class="error-message"
-		style="color: red; font-weight: bold; padding: 10px; background: #ffe0e0;"
-	>
-		{errorMessage}
-	</div>
-{/if}
-<div class="w-screen h-screen flex flex-row gap-3 p-3">
-	<div class="flex flex-col flex-1 gap-3">
-		<Map
-			zoom={6}
-			panes={[
-				{ name: 'aoi', zIndex: 9999 },
-				{ name: 'left', zIndex: 999 },
-				{ name: 'right', zIndex: 999 }
-			]}
-			{aoi}
+<div class="flex min-h-0 flex-1 flex-col">
+	{#if errorMessage}
+		<div
+			class="flex-shrink-0"
+			style="color: red; font-weight: bold; padding: 10px; background: #ffe0e0;"
 		>
-			{#if layer == 'light'}
-				<TileLayer
-					url={'https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png'}
-					options={{ maxZoom: 20, zIndex: 1 }}
-				/>
-			{:else if layer == 'satellite'}
-				<TileLayer
-					url={'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'}
-					options={{ maxZoom: 20, zIndex: 1 }}
-				/>
-			{:else if layer == 'streets'}
-				<TileLayer
-					url={'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'}
-					options={{ maxZoom: 20, zIndex: 1 }}
-				/>
-			{:else if layer == 'dark'}
-				<TileLayer
-					url={'https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png'}
-					options={{ maxZoom: 20, zIndex: 1 }}
-				/>
-			{/if}
-			<LayersControl layers={['light', 'dark', 'streets', 'satellite']} bind:layer />
-			{#if !errorMessage}
-				<DateSelector dates={sat_images} onChange={onChangeLeft} selected={currentImageLeft} />
-				<DateSelector
-					dates={sat_images}
-					onChange={onChangeRight}
-					position="right-2"
-					selected={currentImageRight}
-				/>
-				<ImageLayer
-					XYZ_URL={xyz_url}
-					name="sat"
-					image={'sentinel-2-l2a_' + currentImageLeft + '.tif'}
-					options={{
-						maxZoom: 20,
-						pane: 'left'
-					}}
-				/>
-				<ImageLayer
-					XYZ_URL={xyz_url}
-					name="sat"
-					image={'sentinel-2-l2a_' + currentImageRight + '.tif'}
-					options={{
-						maxZoom: 20,
-						pane: 'right'
-					}}
-				/>
-				<Slider />
-			{/if}
-		</Map>
-		{#if $currentAnalytic !== '' && !errorMessage}
-			<Timeline height={200} />
-		{/if}
-	</div>
-	<div class="w-[250px]">
-		{#if !errorMessage}
-			<Analytics
-				{analytics}
+			{errorMessage}
+		</div>
+	{/if}
+	<div class="flex min-h-0 flex-1 flex-row gap-3 p-3">
+		<div class="flex min-h-0 min-w-0 flex-1 flex-col gap-3">
+			<Map
+				zoom={6}
+				panes={[
+					{ name: 'aoi', zIndex: 9999 },
+					{ name: 'left', zIndex: 999 },
+					{ name: 'right', zIndex: 999 }
+				]}
 				{aoi}
-				date={currentImageRight}
-				left={currentImageLeft}
-				{xyz_url}
-				{api_url}
-			/>
-		{/if}
+			>
+				{#if layer == 'light'}
+					<TileLayer
+						url={'https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png'}
+						options={{ maxZoom: 20, zIndex: 1 }}
+					/>
+				{:else if layer == 'satellite'}
+					<TileLayer
+						url={'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'}
+						options={{ maxZoom: 20, zIndex: 1 }}
+					/>
+				{:else if layer == 'streets'}
+					<TileLayer
+						url={'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'}
+						options={{ maxZoom: 20, zIndex: 1 }}
+					/>
+				{:else if layer == 'dark'}
+					<TileLayer
+						url={'https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png'}
+						options={{ maxZoom: 20, zIndex: 1 }}
+					/>
+				{/if}
+				<LayersControl layers={['light', 'dark', 'streets', 'satellite']} bind:layer />
+				{#if !errorMessage}
+					<DateSelector dates={sat_images} onChange={onChangeLeft} selected={currentImageLeft} />
+					<DateSelector
+						dates={sat_images}
+						onChange={onChangeRight}
+						position="right-2"
+						selected={currentImageRight}
+					/>
+					<ImageLayer
+						XYZ_URL={xyz_url}
+						name="sat"
+						image={'sentinel-2-l2a_' + currentImageLeft + '.tif'}
+						options={{
+							maxZoom: 20,
+							pane: 'left'
+						}}
+					/>
+					<ImageLayer
+						XYZ_URL={xyz_url}
+						name="sat"
+						image={'sentinel-2-l2a_' + currentImageRight + '.tif'}
+						options={{
+							maxZoom: 20,
+							pane: 'right'
+						}}
+					/>
+					<Slider />
+				{/if}
+			</Map>
+			{#if $currentAnalytic !== '' && !errorMessage}
+				<div class="flex-shrink-0">
+					<Timeline height={200} />
+				</div>
+			{/if}
+		</div>
+		<div class="flex w-[250px] flex-shrink-0 flex-col overflow-y-auto">
+			{#if !errorMessage}
+				<Analytics
+					{analytics}
+					{aoi}
+					date={currentImageRight}
+					left={currentImageLeft}
+					{xyz_url}
+					{api_url}
+				/>
+			{/if}
+		</div>
 	</div>
 </div>
