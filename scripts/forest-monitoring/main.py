@@ -6,6 +6,7 @@ from spai.data.satellite import download_satellite_imagery, explore_satellite_im
 from spai.analytics.forest_monitoring import forest_monitoring
 from spai.storage import Storage
 from spai.config import SPAIVars
+from spai.logging.log import Result, log_inputs, log_results
 from tqdm import tqdm
 
 storage = Storage()["data"]
@@ -18,6 +19,9 @@ if __name__ == "__main__":
         print("Looking for images in the last month")
         aoi = vars["AOI"]
         dates = vars["DATES"]
+
+        log_inputs({"AOI": aoi, "DATES": dates})
+
         images = explore_satellite_imagery(aoi, dates, cloud_cover=10)
 
         if not images:
@@ -46,6 +50,27 @@ if __name__ == "__main__":
                 0
             ]  # Extract date from image name
             forest_monitoring(downloaded_image, date, aoi, storage)
+
+        # Read analytics tables written by forest_monitoring and log the most recent row
+        results = []
+        if storage.exists("AOI_Vegetation_Growth.json"):
+            growth_df = storage.read("AOI_Vegetation_Growth.json")
+            latest = growth_df.iloc[0]
+            results += [
+                Result(label="Vegetation area", value=round(latest["Vegetation Ha"], 2), unit="ha"),
+                Result(label="Non-vegetation area", value=round(latest["Not Vegetation Ha"], 2), unit="ha"),
+            ]
+        if storage.exists("AOI_Vegetation_Quality.json"):
+            quality_df = storage.read("AOI_Vegetation_Quality.json")
+            latest = quality_df.iloc[0]
+            results += [
+                Result(label="Healthy vegetation", value=round(latest["Healthy Vegetation"], 2), unit="ha"),
+                Result(label="Very healthy vegetation", value=round(latest["Very Healthy Vegetation"], 2), unit="ha"),
+                Result(label="Sparse or unhealthy vegetation", value=round(latest["Sparse or Unhealthy Vegetation"], 2), unit="ha"),
+                Result(label="Bare ground", value=round(latest["Bare Ground"], 2), unit="ha"),
+            ]
+        if results:
+            log_results(results)
 
     except Exception as e:
         print(f"An error occurred: {e}. The process will stop.")

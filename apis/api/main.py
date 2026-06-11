@@ -17,6 +17,8 @@ from spai.config import SPAIVars
 from spai.image.xyz import get_image_data, get_tile_data, ready_image
 from spai.image.xyz.errors import ImageOutOfBounds
 
+from prometheus_fastapi_instrumentator import Instrumentator
+
 app = FastAPI(title="api")
 app.add_middleware(
     CORSMiddleware,
@@ -25,6 +27,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+Instrumentator().instrument(app).expose(app=app)
+
 
 storage = Storage()["data"]
 vars = SPAIVars()
@@ -147,6 +152,10 @@ def retrieve_image_tile(
     except ImageOutOfBounds as error:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=error.message)
 
+
+@app.get("/health")
+def health():
+    return {"status": "ok"}
 
 # need this to run in background
 if __name__ == "__main__":
