@@ -19,7 +19,14 @@ from spai.image.xyz.errors import ImageOutOfBounds
 
 from prometheus_fastapi_instrumentator import Instrumentator
 
-app = FastAPI(title="api")
+from src.pipeline_status import (
+    data_available_payload,
+    data_unavailable_http,
+    read_pipeline_status,
+)
+from src.lazy import LazyObject
+
+app = FastAPI(title="SPAI API — forest-monitoring")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -30,20 +37,26 @@ app.add_middleware(
 
 Instrumentator().instrument(app).expose(app=app)
 
+storage = LazyObject(lambda: Storage()["data"])
+vars = LazyObject(SPAIVars)
 
-storage = Storage()["data"]
-vars = SPAIVars()
+
+@app.get("/", include_in_schema=False)
+def root():
+    return {
+        "service": "SPAI API",
+        "name": "forest-monitoring",
+        "status": "ok",
+        "docs": "/docs",
+        "health": "/health",
+        "pipeline_status": "/pipeline/status",
+    }
 
 
 @app.get("/analytics/{analytics_file}")
 async def analytics(analytics_file: str):
     """
-    Return water quality analytics
-
-    Parameters
-    ----------
-    analytics_file : str
-        Name of analytics file
+    Return forest monitoring analytics
 
     Parameters
     ----------
@@ -53,7 +66,7 @@ async def analytics(analytics_file: str):
     Returns
     -------
     analytics : dict
-        Dictionary with water quality analytics
+        Dictionary with analytics
 
     Raises
     ------
@@ -63,7 +76,7 @@ async def analytics(analytics_file: str):
     try:
         if not storage.exists(f"{analytics_file}.json"):
             raise HTTPException(
-                status_code=404, detail=f"{analytics_file} file not found"
+                status_code=404, detail="Not found."
             )
         analytics = storage.read(f"{analytics_file}.json")
         # Format date to ensure it is in the correct format
@@ -71,8 +84,10 @@ async def analytics(analytics_file: str):
             analytics.index = analytics.index.strftime("%Y-%m-%d")
         analytics = analytics.to_dict()
         return analytics
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    except HTTPException:
+        raise
+    except Exception:
+        raise data_unavailable_http()
 
 
 @app.get("/images")
@@ -85,12 +100,18 @@ def retrieve_images():
     images : list
         List of available images in tif format
     """
-    return storage.list("*.tif")
+    try:
+        return storage.list("*.tif")
+    except Exception:
+        raise data_unavailable_http()
 
 
 @app.get("/aoi")
 def retrieve_aoi():
-    return vars["AOI"]
+    try:
+        return vars["AOI"]
+    except Exception:
+        raise data_unavailable_http()
 
 
 @app.get("/images/{image}/{z}/{x}/{y}.png")
@@ -133,29 +154,45 @@ def retrieve_image_tile(
     HTTPException
         If image is not found
     """
-    if not storage.exists(image):
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Image not found"
-        )
-    image_path = storage.get_path(image)
-    tile_size = (256, 256)
-    if len(bands) == 1:
-        bands = int(bands)
-    else:
-        bands = tuple([int(band) for band in bands.split(",")])
-    stretch = tuple([float(v) for v in stretch.split(",")])
     try:
+        if not storage.exists(image):
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Image not found"
+            )
+        image_path = storage.get_path(image)
+        tile_size = (256, 256)
+        if len(bands) == 1:
+            bands = int(bands)
+        else:
+            bands = tuple([int(band) for band in bands.split(",")])
+        stretch = tuple([float(v) for v in stretch.split(",")])
         tile = get_tile_data(image_path, (x, y, z), bands, tile_size)
         tile = get_image_data(tile, stretch, palette)
         image = ready_image(tile)
         return StreamingResponse(image, media_type="image/png")
+    except HTTPException:
+        raise
     except ImageOutOfBounds as error:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=error.message)
+    except Exception:
+        raise data_unavailable_http()
+
+
+@app.get("/pipeline/status")
+def pipeline_status():
+    """Current pipeline status registry from storage."""
+    return read_pipeline_status(storage)
+
+
+@app.get("/data_available")
+def data_available():
+    return data_available_payload(read_pipeline_status(storage))
 
 
 @app.get("/health")
 def health():
     return {"status": "ok"}
+
 
 # need this to run in background
 if __name__ == "__main__":

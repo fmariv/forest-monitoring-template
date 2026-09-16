@@ -10,6 +10,7 @@
 	import Analytics from '$components/Analytics.svelte';
 	import Slider from '$components/map/Slider.svelte';
 	import { analyticsStore, currentAnalytic } from '$stores/analytics.js';
+	import PipelineStatusBanner from '$components/PipelineStatusBanner.svelte';
 
 	export let data;
 
@@ -24,7 +25,7 @@
 
 	$: xyz_url = `${api_url}/images`;
 
-	$: sat_images = images
+	$: sat_images = (images || [])
 		.filter((image) => image.includes('sentinel-2-l2a'))
 		.map((image) => image.split('_')[1].split('.')[0])
 		.sort((a, b) => compareAsc(parseISO(a), parseISO(b)));
@@ -32,8 +33,10 @@
 	// Check if there are no images available
 	$: if (sat_images.length === 0) {
 		errorMessage = 'No images or layers have been found.';
-	} else if (typeof analytics === 'object' && 'detail' in analytics) {
+	} else if (typeof analytics === 'object' && analytics && 'detail' in analytics) {
 		errorMessage = 'No vegetation have been found.';
+	} else {
+		errorMessage = '';
 	}
 
 	let currentImageLeft, currentImageRight;
@@ -60,7 +63,8 @@
 		</div>
 	{/if}
 	<div class="flex min-h-0 flex-1 flex-row gap-3 p-3">
-		<div class="flex min-h-0 min-w-0 flex-1 flex-col gap-3">
+		<div class="relative flex min-h-0 min-w-0 flex-1 flex-col gap-3">
+			<PipelineStatusBanner {api_url} />
 			<Map
 				zoom={6}
 				panes={[

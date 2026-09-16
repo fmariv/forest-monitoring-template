@@ -1,20 +1,30 @@
 import { env } from '$env/dynamic/private';
 
-export async function load({fetch}) {
+export async function load({ fetch }) {
 	const ENV = import.meta.env.VITE_ENV;
-    let origin = ENV === 'PRO' ? 'https://' : 'http://';
-    const api_url = `${origin}${env.API_URL}`;
+	const origin = ENV === 'PRO' ? 'https://' : 'http://';
+	const api_url = `${origin}${env.API_URL}`;
 
-	let res = [
-		await fetch(`${api_url}/images`),
-		await fetch(`${api_url}/analytics/AOI_Vegetation_Growth`),
-		await fetch(`${api_url}/aoi`)
-	];
-	const [images, analytics, aoi] = await Promise.all(res.map(r => r.json()));
+	const safeFetch = async (path) => {
+		try {
+			const res = await fetch(`${api_url}${path}`);
+			if (res.ok) return await res.json();
+		} catch {
+			// API may be unavailable during bootstrap
+		}
+		return null;
+	};
+
+	const [images, analytics, aoi] = await Promise.all([
+		safeFetch('/images'),
+		safeFetch('/analytics/AOI_Vegetation_Growth'),
+		safeFetch('/aoi')
+	]);
+
 	return {
 		api_url,
-		images,
-		analytics,
-		aoi
+		images: Array.isArray(images) ? images : [],
+		analytics: analytics ?? null,
+		aoi: aoi ?? null
 	};
 }
