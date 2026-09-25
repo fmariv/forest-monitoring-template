@@ -14,37 +14,25 @@
 
 	export let data;
 
-	$: ({ api_url, images, analytics, aoi } = data);
+	$: ({ api_url, xyz_url, xyz_query, images, analytics, aoi } = data);
 
 	$: currentAnalytic.set('Vegetation Growth');
 	$: analyticsStore.set(analytics);
 
 	let layer = DEFAULT_BASEMAP;
-	let errorMessage = '';
-	let xyz_url = '';
-
-	$: xyz_url = `${api_url}/images`;
 
 	$: sat_images = (images || [])
 		.filter((image) => image.includes('sentinel-2-l2a'))
 		.map((image) => image.split('_')[1].split('.')[0])
 		.sort((a, b) => compareAsc(parseISO(a), parseISO(b)));
 
-	// Check if there are no images available
-	$: if (sat_images.length === 0) {
-		errorMessage = 'No images or layers have been found.';
-	} else if (typeof analytics === 'object' && analytics && 'detail' in analytics) {
-		errorMessage = 'No vegetation have been found.';
-	} else {
-		errorMessage = '';
-	}
+	$: hasImages = sat_images.length > 0;
 
 	let currentImageLeft, currentImageRight;
-	$: if (!currentImageLeft && sat_images.length > 0) currentImageLeft = sat_images[0];
-	$: if (!currentImageRight && sat_images.length > 0)
+	$: if (!currentImageLeft && hasImages) currentImageLeft = sat_images[0];
+	$: if (!currentImageRight && hasImages)
 		currentImageRight = sat_images[sat_images.length - 1];
 
-	// select image
 	function onChangeLeft(e) {
 		currentImageLeft = sat_images.find((i) => i == e.target.value);
 	}
@@ -54,14 +42,6 @@
 </script>
 
 <div class="flex min-h-0 flex-1 flex-col">
-	{#if errorMessage}
-		<div
-			class="flex-shrink-0"
-			style="color: red; font-weight: bold; padding: 10px; background: #ffe0e0;"
-		>
-			{errorMessage}
-		</div>
-	{/if}
 	<div class="flex min-h-0 flex-1 flex-row gap-3 p-3">
 		<div class="relative flex min-h-0 min-w-0 flex-1 flex-col gap-3">
 			<PipelineStatusBanner {api_url} />
@@ -74,11 +54,11 @@
 				]}
 				{aoi}
 			>
-			{#key layer}
-				<TileLayer url={BASEMAPS[layer]} options={BASEMAP_OPTIONS} />
-			{/key}
-			<LayersControl layers={BASEMAP_LAYERS} bind:layer />
-				{#if !errorMessage}
+				{#key layer}
+					<TileLayer url={BASEMAPS[layer]} options={BASEMAP_OPTIONS} />
+				{/key}
+				<LayersControl layers={BASEMAP_LAYERS} bind:layer />
+				{#if hasImages}
 					<DateSelector dates={sat_images} onChange={onChangeLeft} selected={currentImageLeft} />
 					<DateSelector
 						dates={sat_images}
@@ -90,6 +70,7 @@
 						XYZ_URL={xyz_url}
 						name="sat"
 						image={'sentinel-2-l2a_' + currentImageLeft + '.tif'}
+						query={xyz_query}
 						options={{
 							maxZoom: 20,
 							pane: 'left'
@@ -99,6 +80,7 @@
 						XYZ_URL={xyz_url}
 						name="sat"
 						image={'sentinel-2-l2a_' + currentImageRight + '.tif'}
+						query={xyz_query}
 						options={{
 							maxZoom: 20,
 							pane: 'right'
@@ -107,23 +89,22 @@
 					<Slider />
 				{/if}
 			</Map>
-			{#if $currentAnalytic !== '' && !errorMessage}
+			{#if $currentAnalytic !== '' && hasImages}
 				<div class="flex-shrink-0">
 					<Timeline height={200} />
 				</div>
 			{/if}
 		</div>
 		<div class="flex w-[250px] flex-shrink-0 flex-col overflow-y-auto">
-			{#if !errorMessage}
-				<Analytics
-					{analytics}
-					{aoi}
-					date={currentImageRight}
-					left={currentImageLeft}
-					{xyz_url}
-					{api_url}
-				/>
-			{/if}
+			<Analytics
+				{analytics}
+				{aoi}
+				date={currentImageRight}
+				left={currentImageLeft}
+				{xyz_url}
+				{xyz_query}
+				{api_url}
+			/>
 		</div>
 	</div>
 </div>

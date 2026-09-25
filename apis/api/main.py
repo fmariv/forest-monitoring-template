@@ -3,19 +3,15 @@ Analytics API
 """
 
 import argparse
-from typing import Optional
 
 import pandas as pd
 
 import uvicorn
-from fastapi import FastAPI, HTTPException, status
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from starlette.responses import StreamingResponse
 
 from spai.storage import Storage
 from spai.config import SPAIVars
-from spai.image.xyz import get_image_data, get_tile_data, ready_image
-from spai.image.xyz.errors import ImageOutOfBounds
 
 from prometheus_fastapi_instrumentator import Instrumentator
 
@@ -110,70 +106,6 @@ def retrieve_images():
 def retrieve_aoi():
     try:
         return vars["AOI"]
-    except Exception:
-        raise data_unavailable_http()
-
-
-@app.get("/images/{image}/{z}/{x}/{y}.png")
-def retrieve_image_tile(
-    image: str,
-    z: int,
-    x: int,
-    y: int,
-    bands: Optional[str] = "1",
-    stretch: Optional[str] = "0,1",
-    palette: Optional[str] = "viridis",
-):
-    """
-    Return image tile
-
-    Parameters
-    ----------
-    image : str
-        Image name
-    z : int
-        Zoom level
-    x : int
-        Tile x coordinate
-    y : int
-        Tile y coordinate
-    bands : str, optional
-        Bands to retrieve, by default "1"
-    stretch : str, optional
-        Stretch to apply, by default "0,1"
-    palette : str, optional
-        Palette to use, by default "viridis"
-
-    Returns
-    -------
-    tile : StreamingResponse
-        Image tile
-
-    Raises
-    ------
-    HTTPException
-        If image is not found
-    """
-    try:
-        if not storage.exists(image):
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="Image not found"
-            )
-        image_path = storage.get_path(image)
-        tile_size = (256, 256)
-        if len(bands) == 1:
-            bands = int(bands)
-        else:
-            bands = tuple([int(band) for band in bands.split(",")])
-        stretch = tuple([float(v) for v in stretch.split(",")])
-        tile = get_tile_data(image_path, (x, y, z), bands, tile_size)
-        tile = get_image_data(tile, stretch, palette)
-        image = ready_image(tile)
-        return StreamingResponse(image, media_type="image/png")
-    except HTTPException:
-        raise
-    except ImageOutOfBounds as error:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=error.message)
     except Exception:
         raise data_unavailable_http()
 

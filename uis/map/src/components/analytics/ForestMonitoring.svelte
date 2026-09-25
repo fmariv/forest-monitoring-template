@@ -9,6 +9,7 @@
 	export let analytics;
 	export let date;
 	export let xyz_url;
+	export let xyz_query = '';
 	export let api_url;
 	export let left;
 
@@ -175,16 +176,17 @@
 	<Sprout size="100%" />
 </button>
 
-{#if selected}
+{#if selected && options?.series}
 	<h3>{title}</h3>
 	<Pie {options} height={300} />
 {/if}
 
-{#if selected}
+{#if selected && left && date}
 	<ImageLayer
 		XYZ_URL={xyz_url}
 		name="vegetation"
 		image={image + left + '.tif'}
+		query={xyz_query}
 		options={{
 			maxZoom: 20,
 			pane: 'left'
@@ -197,6 +199,7 @@
 		XYZ_URL={xyz_url}
 		name="vegetation"
 		image={image + date + '.tif'}
+		query={xyz_query}
 		options={{
 			maxZoom: 20,
 			pane: 'right'
