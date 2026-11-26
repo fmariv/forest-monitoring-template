@@ -4,6 +4,12 @@
 	import Pie from '$components/viz/Pie.svelte';
 	import ImageLayer from '$components/map/ImageLayer.svelte';
 	import { analyticsStore, currentAnalytic } from '$stores/analytics.js';
+	import {
+		GROWTH_COLORS,
+		HEALTH_PIE_COLORS,
+		CHART,
+		OVERLAY_OPACITY
+	} from '$lib/colors.js';
 
 	export let title;
 	export let analytics;
@@ -22,96 +28,94 @@
 	let selectedButton = 'growth';
 	let selected = true;
 
+	const haFormatter = (v) => Number.parseInt(v).toLocaleString('en-US') + ' Ha';
+	const totalFormatter = (w) => {
+		const total = w.globals.seriesTotals.reduce((a, b) => a + b, 0);
+		return parseInt(total).toLocaleString('en-US') + ' Ha';
+	};
+
+	const sharedDonutOptions = {
+		dataLabels: {
+			enabled: false
+		},
+		plotOptions: {
+			pie: {
+				customScale: 0.92,
+				donut: {
+					size: '62%',
+					labels: {
+						show: true,
+						name: {
+							show: true,
+							fontSize: '13px',
+							fontWeight: 600,
+							color: CHART.totalLabel,
+							offsetY: -4
+						},
+						value: {
+							show: true,
+							fontSize: '22px',
+							fontWeight: 700,
+							color: CHART.totalValue,
+							offsetY: 4,
+							formatter: haFormatter
+						},
+						total: {
+							show: true,
+							label: 'Total',
+							fontSize: '13px',
+							fontWeight: 600,
+							color: CHART.totalLabel,
+							formatter: totalFormatter
+						}
+					}
+				}
+			}
+		},
+		legend: {
+			position: 'bottom',
+			fontSize: '11px',
+			fontWeight: 500,
+			itemMargin: {
+				horizontal: 8,
+				vertical: 2
+			}
+		}
+	};
+
 	let options = {};
 	$: if (analytics && date && title === 'Vegetation Growth') {
 		options = {
+			...sharedDonutOptions,
 			series: [analytics['Vegetation Ha'][date], analytics['Not Vegetation Ha'][date]],
 			labels: ['Vegetation Ha', 'Not Vegetation Ha'],
 			tooltip: {
 				y: {
 					formatter: function (value) {
-						return parseInt(value).toLocaleString('en-US') + ' Has';
+						return parseInt(value).toLocaleString('en-US') + ' Ha';
 					}
 				}
 			},
-			dataLabels: {
-				formatter: function (val, opts) {
-					return parseInt(0.01 * val * analytics.Total[date]).toLocaleString('en-US');
-				}
-			},
-			colors: ['#25dd47', '#ff0000'],
-			plotOptions: {
-				pie: {
-					donut: {
-						labels: {
-							show: true,
-							value: {
-								formatter: function (v) {
-									return Number.parseInt(v).toLocaleString('en-US') + 'Has';
-								}
-							},
-							total: {
-								show: true,
-								label: 'Total',
-								color: '#373d3f',
-								formatter: function (w) {
-									const total = w.globals.seriesTotals.reduce((a, b) => {
-										return a + b;
-									}, 0);
-									return parseInt(total).toLocaleString('en-US') + 'Has';
-								}
-							}
-						}
-					}
-				}
-			},
-			legend: {
-				position: 'bottom'
-			}
+			colors: GROWTH_COLORS
 		};
 	} else if (analytics && date && title === 'Vegetation Health') {
 		options = {
+			...sharedDonutOptions,
 			series: [
 				analytics['Bare Ground'][date],
 				analytics['Healthy Vegetation'][date],
 				analytics['Sparse or Unhealthy Vegetation'][date],
 				analytics['Very Healthy Vegetation'][date]
 			],
-			labels: [
-				'Bare ground',
-				'Healthy Vegetation',
-				'Sparse or Unhealthy Vegetation',
-				'Very Healthy Vegetation'
-			],
-			colors: ['#ff0000', '#90ee90', '#ffff00', '#006400'],
-			plotOptions: {
-				pie: {
-					donut: {
-						labels: {
-							show: true,
-							value: {
-								formatter: function (v) {
-									return Number.parseInt(v).toLocaleString('en-US') + ' Has';
-								}
-							},
-							total: {
-								show: true,
-								label: 'Total',
-								color: '#373d3f',
-								formatter: function (w) {
-									const total = w.globals.seriesTotals.reduce((a, b) => {
-										return a + b;
-									}, 0);
-									return parseInt(total).toLocaleString('en-US') + ' Has';
-								}
-							}
-						}
+			labels: ['Bare ground', 'Healthy', 'Sparse / Unhealthy', 'Very Healthy'],
+			tooltip: {
+				y: {
+					formatter: function (value) {
+						return parseInt(value).toLocaleString('en-US') + ' Ha';
 					}
 				}
 			},
-			legend: {
-				position: 'bottom'
-			}
+			colors: HEALTH_PIE_COLORS
 		};
 	}
 
@@ -176,9 +180,13 @@
 	<Sprout size="100%" />
 </button>
 
-{#if selected && options?.series}
+	{#if selected && options?.series}
 	<h3>{title}</h3>
-	<Pie {options} height={300} />
+	<div class="donut-wrap">
+		{#key title}
+			<Pie {options} height={280} />
+		{/key}
+	</div>
 {/if}
 
 {#if selected && left && date}
@@ -189,7 +197,8 @@
 		query={xyz_query}
 		options={{
 			maxZoom: 20,
-			pane: 'left'
+			pane: 'left',
+			opacity: OVERLAY_OPACITY
 		}}
 		{bands}
 		{stretch}
@@ -202,10 +211,25 @@
 		query={xyz_query}
 		options={{
 			maxZoom: 20,
-			pane: 'right'
+			pane: 'right',
+			opacity: OVERLAY_OPACITY
 		}}
 		{bands}
 		{stretch}
 		{palette}
 	/>
 {/if}
+
+<style>
+	.donut-wrap {
+		width: 100%;
+		min-height: 280px;
+	}
+
+	h3 {
+		margin: 8px 0 0;
+		font-size: 15px;
+		font-weight: 600;
+		color: var(--text, #172033);
+	}
+</style>

@@ -70,19 +70,29 @@
             return "oninput" in rangeInput ? "input" : "change";
           }
 
+          // When the slider thumb is pressed, Leaflet map drag is disabled so the
+          // range can move. If mouseup/touchend is lost (release outside the
+          // thumb, tab blur, etc.) drag stayed off forever — pan/zoom frozen
+          // while the slider still worked. Restore via document-level release
+          // and always re-enable map interaction.
+          var mapDragSuspended = false;
+
           function cancelMapDrag() {
+            if (!this._map || mapDragSuspended) return;
             mapWasDragEnabled = this._map.dragging.enabled();
             mapWasTapEnabled = this._map.tap && this._map.tap.enabled();
             this._map.dragging.disable();
             this._map.tap && this._map.tap.disable();
+            mapDragSuspended = true;
           }
 
           function uncancelMapDrag(e) {
+            if (!mapDragSuspended) return;
+            mapDragSuspended = false;
+            if (!this._map) return;
             this._refocusOnMap(e);
-            if (mapWasDragEnabled) {
-              this._map.dragging.enable();
-            }
-            if (mapWasTapEnabled) {
+            this._map.dragging.enable();
+            if (this._map.tap) {
               this._map.tap.enable();
             }
           }
@@ -239,18 +249,11 @@
               map.on("move", this._updateClip, this);
               map.on("layeradd layerremove", this._updateLayers, this);
               on(range, getRangeEvent(range), this._updateClip, this);
-              on(
-                range,
-                L.Browser.touch ? "touchstart" : "mousedown",
-                cancelMapDrag,
-                this
-              );
-              on(
-                range,
-                L.Browser.touch ? "touchend" : "mouseup",
-                uncancelMapDrag,
-                this
-              );
+              on(range, "mousedown touchstart", cancelMapDrag, this);
+              // Document-level release so drag is restored even if the pointer
+              // is released outside the range thumb.
+              on(document, "mouseup touchend pointerup", uncancelMapDrag, this);
+              on(window, "blur", uncancelMapDrag, this);
             },
 
             _removeEvents: function () {
@@ -258,18 +261,15 @@
               var map = this._map;
               if (range) {
                 off(range, getRangeEvent(range), this._updateClip, this);
-                off(
-                  range,
-                  L.Browser.touch ? "touchstart" : "mousedown",
-                  cancelMapDrag,
-                  this
-                );
-                off(
-                  range,
-                  L.Browser.touch ? "touchend" : "mouseup",
-                  uncancelMapDrag,
-                  this
-                );
+                off(range, "mousedown touchstart", cancelMapDrag, this);
+              }
+              off(document, "mouseup touchend pointerup", uncancelMapDrag, this);
+              off(window, "blur", uncancelMapDrag, this);
+              // Ensure map is interactive again if control is torn down mid-drag
+              if (mapDragSuspended && map) {
+                mapDragSuspended = false;
+                map.dragging.enable();
+                if (map.tap) map.tap.enable();
               }
               if (map) {
                 map.off("layeradd layerremove", this._updateLayers, this);

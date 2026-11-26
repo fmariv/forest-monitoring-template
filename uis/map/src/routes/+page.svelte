@@ -41,8 +41,8 @@
 	}
 </script>
 
-<div class="flex min-h-0 flex-1 flex-col">
-	<div class="flex min-h-0 flex-1 flex-row gap-3 p-3">
+<div class="flex min-h-0 flex-1 flex-col bg-white">
+	<div class="flex min-h-0 flex-1 flex-row gap-3 p-3 bg-white">
 		<div class="relative flex min-h-0 min-w-0 flex-1 flex-col gap-3">
 			<PipelineStatusBanner {api_url} />
 			<Map
@@ -95,7 +95,7 @@
 				</div>
 			{/if}
 		</div>
-		<div class="flex w-[250px] flex-shrink-0 flex-col overflow-y-auto">
+		<div class="flex w-[280px] flex-shrink-0 flex-col overflow-y-auto bg-white">
 			<Analytics
 				{analytics}
 				{aoi}

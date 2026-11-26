@@ -11,7 +11,7 @@
 	export let api_url;
 	export let left;
 
-	let selected = false;
+	let selected = true;
 	const toggleAOI = () => {
 		selected = !selected;
 	};
@@ -20,7 +20,7 @@
 <div>
 	<h1>Asset</h1>
 	<button
-		class={`w-10 h-10 p-1 hover:bg-gray-100 'text-gray-800'} tooltip tooltip-bottom ${
+		class={`w-10 h-10 p-1 hover:bg-gray-100 tooltip tooltip-bottom ${
 			selected ? 'text-green-600' : 'text-gray-800'
 		}`}
 		on:click={toggleAOI}
@@ -36,7 +36,7 @@
 	<GeoJSONLayer
 		name={'aoi'}
 		options={{
-			style: { fillOpacity: 0, weight: 3, color: 'blue', dashArray: '' },
+			style: { fillOpacity: 0, weight: 2, color: '#0F766E', dashArray: '' },
 			pane: 'aoi',
 			zIndex: 0
 		}}

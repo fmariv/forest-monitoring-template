@@ -2,6 +2,7 @@
 	import { compareAsc, parseISO } from 'date-fns';
 	import Lines from '$components/viz/Lines.svelte';
 	import { analyticsStore, currentAnalytic } from '$stores/analytics.js';
+	import { GROWTH_COLORS, HEALTH_TIMELINE_COLORS } from '$lib/colors.js';
 
 	export let height;
 	export let data;
@@ -17,7 +18,7 @@
 	$: if (sorted_dates)
 		if (analytic === 'Vegetation Growth') {
 			options = {
-				colors: ['#36A203', '#C95C10'],
+				colors: GROWTH_COLORS,
 				xaxis: {
 					categories: sorted_dates,
 					type: 'datetime'
@@ -37,7 +38,7 @@
 			};
 		} else if (analytic === 'Vegetation Health') {
 			options = {
-				colors: ['#236902', '#72D001', '#FAE601', '#C95C10'],
+				colors: HEALTH_TIMELINE_COLORS,
 				xaxis: {
 					categories: sorted_dates,
 					type: 'datetime'

@@ -1,7 +1,7 @@
 <script>
 	import { onDestroy } from 'svelte';
 	import { map } from '$stores/map/map';
-	import { imageLayers } from '$stores/map/imageLayers';
+	import { imageLayers } from '$stores/map/imageLayers.js';
 
 	export let name = 'image';
 	export let image;
@@ -13,7 +13,8 @@
 	/** Extra query string for spai-xyz, e.g. session=… from POST /session */
 	export let query = '';
 
-	const pane = options.pane || 'overlayPane';
+	$: pane = options.pane || 'overlayPane';
+	$: opacity = typeof options.opacity === 'number' ? options.opacity : 1;
 
 	$: params = [`stretch=${stretch}`, `bands=${bands}`, `palette=${palette}`, query]
 		.filter(Boolean)
@@ -25,10 +26,12 @@
 		(async () => {
 			const L = await import('leaflet');
 			if (!$map || !image) return;
-			if ($imageLayers[pane]?.[name]) {
-				$imageLayers[pane][name].setUrl(url);
+			const existing = $imageLayers[pane]?.[name];
+			if (existing) {
+				existing.setUrl(url);
+				existing.setOpacity(opacity);
 			} else {
-				const layer = L.tileLayer(url, options).addTo($map);
+				const layer = L.tileLayer(url, { ...options, opacity }).addTo($map);
 				imageLayers.addImageLayer(pane, name, layer);
 			}
 		})();
